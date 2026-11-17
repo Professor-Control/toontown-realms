@@ -270,7 +270,7 @@ def doSuitAttack(attack):
         suitTrack = doTremor(attack)
     elif name == 'ttrealms:watercooler':
         suitTrack = doWatercooler(attack)
-    elif name == 'ttrealms:withdrawal':
+    elif name in ('ttrealms:withdrawal', 'ttrealms:withdrawal_group'):
         suitTrack = doWithdrawal(attack)
     elif name == 'ttrealms:write_off':
         suitTrack = doWriteOff(attack)
@@ -3376,18 +3376,20 @@ def doEvictionNotice(attack):
 def doWithdrawal(attack):
     suit = attack['suit']
     battle = attack['battle']
-    target = attack['target']
-    toon = target['toon']
-    dmg = target['hp']
+    # TODO: Have a more sophisticated system for multiple targets on a single-target attack.
+    if attack['group'] == 'group':
+        targets = attack['target']
+    else:
+        targets = [attack['target']]
     BattleParticles.loadParticles()
     particleEffect = BattleParticles.createParticleEffect('Withdrawal')
     BattleParticles.setEffectTexture(particleEffect, 'snow-particle')
     suitTrack = getSuitAnimTrack(attack)
     partTrack = getPartTrack(particleEffect, 1e-05, suitTrack.getDuration() + 1.2, [particleEffect, suit, 0])
-    toonTrack = getToonTrack(attack, 1.2, ['cringe'], 0.2, splicedDodgeAnims=[['duck', 1e-05, 0.8]], showMissedExtraTime=0.8)
-    headParts = toon.getHeadParts()
-    torsoParts = toon.getTorsoParts()
-    legsParts = toon.getLegsParts()
+    toonTracks = Parallel()
+    for i in range(len(targets)):
+        tgt = targets[i]
+        toonTracks.append(getToonTrack(attack, damageDelay=1.2, damageAnimNames=['cringe'], dodgeDelay=0.2, splicedDodgeAnims=[['duck', 1e-05, 0.8]], target=tgt, showMissedExtraTime=0.8))
 
     def changeColor(parts):
         track = Parallel()
@@ -3405,20 +3407,29 @@ def doWithdrawal(attack):
 
         return track
 
+    colorTracks = ()
+    for t in targets:
+        toon = t['toon']
+        dmg = t['hp']
+        headParts = toon.getHeadParts()
+        torsoParts = toon.getTorsoParts()
+        legsParts = toon.getLegsParts()
+        if dmg > 0:
+            colorTrack = Sequence()
+            colorTrack.append(Wait(1.6))
+            colorTrack.append(Func(battle.movie.needRestoreColor))
+            colorTrack.append(changeColor(headParts))
+            colorTrack.append(changeColor(torsoParts))
+            colorTrack.append(changeColor(legsParts))
+            colorTrack.append(Wait(2.9))
+            colorTrack.append(resetColor(headParts))
+            colorTrack.append(resetColor(torsoParts))
+            colorTrack.append(resetColor(legsParts))
+            colorTrack.append(Func(battle.movie.clearRestoreColor))
+            colorTracks += (colorTrack,)
+
     soundTrack = getSoundTrack('SA_withdrawl.ogg', delay=1.4, node=suit)
-    if dmg > 0:
-        colorTrack = Sequence()
-        colorTrack.append(Wait(1.6))
-        colorTrack.append(Func(battle.movie.needRestoreColor))
-        colorTrack.append(Parallel(changeColor(headParts), changeColor(torsoParts), changeColor(legsParts)))
-        colorTrack.append(Wait(2.9))
-        colorTrack.append(resetColor(headParts))
-        colorTrack.append(resetColor(torsoParts))
-        colorTrack.append(resetColor(legsParts))
-        colorTrack.append(Func(battle.movie.clearRestoreColor))
-        return Parallel(suitTrack, partTrack, toonTrack, soundTrack, colorTrack)
-    else:
-        return Parallel(suitTrack, partTrack, toonTrack, soundTrack)
+    return Parallel(suitTrack, partTrack, toonTracks, soundTrack, *colorTracks)
 
 
 def doJargon(attack):

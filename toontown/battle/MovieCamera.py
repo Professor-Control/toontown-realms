@@ -543,7 +543,7 @@ def chooseSuitShot(attack, attackDuration):
         camTrack.append(suitCameraShakeShot(suit, attackDuration, shakeIntensity))
     elif name == 'ttrealms:watercooler':
         camTrack.append(defaultCamera())
-    elif name == 'ttrealms:withdrawal':
+    elif name in ('ttrealms:withdrawal', 'ttrealms:withdrawal_group'):
         camTrack.append(defaultCamera(openShotDuration=1.2))
     elif name == 'ttrealms:write_off':
         camTrack.append(defaultCamera())
