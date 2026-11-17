@@ -142,7 +142,7 @@ def doSuitAttack(attack):
         suitTrack = doCanned(attack)
     elif name == 'ttrealms:chomp':
         suitTrack = doChomp(attack)
-    elif name == 'ttrealms:cigar_smoke':
+    elif name in ('ttrealms:cigar_smoke', 'ttrealms:cigar_smoke_group'):
         suitTrack = doCigarSmoke(attack)
     elif name == 'ttrealms:clip_on_tie':
         suitTrack = doClipOnTie(attack)
@@ -3342,13 +3342,12 @@ def doChomp(attack):
 def doCigarSmoke(attack):
     suit = attack['suit']
     battle = attack['battle']
-    target = attack['target']
-    toon = target['toon']
-    dmg = target['hp']
+    # TODO: Have a more sophisticated system for multiple targets on a single-target attack.
+    if attack['group'] == 'group':
+        targets = attack['target']
+    else:
+        targets = [attack['target']]
     BattleParticles.loadParticles()
-    baseFlameEffect = BattleParticles.createParticleEffect(file='cigar')
-    baseFlameSmall = BattleParticles.createParticleEffect(file='cigar')
-    baseFlameSmall.setScale(0.7)
     cigar = globalPropPool.getProp('cigar')
     suitTrack = getSuitTrack(attack)
     suitCigar = suit.find('**/suit_cigar')
@@ -3373,8 +3372,7 @@ def doCigarSmoke(attack):
             Wait(0.01),
             LerpScaleInterval(cigar, 0.5, MovieUtil.PNT3_NEARZERO),
             Func(MovieUtil.removeProp, cigar))
-    baseFlameTrack = getPartTrack(baseFlameEffect, 3.8, 1.9, [baseFlameEffect, toon, 0])
-    baseFlameSmallTrack = getPartTrack(baseFlameSmall, 3.8, 1.9, [baseFlameSmall, toon, 0])
+    baseFlameTracks = ()
 
     def changeColor(parts):
         track = Parallel()
@@ -3392,21 +3390,35 @@ def doCigarSmoke(attack):
 
         return track
 
-    if dmg > 0:
-        headParts = toon.getHeadParts()
-        torsoParts = toon.getTorsoParts()
-        legsParts = toon.getLegsParts()
-        colorTrack = Sequence()
-        colorTrack.append(Wait(4.4))
-        colorTrack.append(Func(battle.movie.needRestoreColor))
-        colorTrack.append(changeColor(headParts))
-        colorTrack.append(changeColor(torsoParts))
-        colorTrack.append(changeColor(legsParts))
-        colorTrack.append(Wait(3.5))
-        colorTrack.append(resetColor(headParts))
-        colorTrack.append(resetColor(torsoParts))
-        colorTrack.append(resetColor(legsParts))
-        colorTrack.append(Func(battle.movie.clearRestoreColor))
+    colorTracks = ()
+    for t in targets:
+        toon = t['toon']
+        dmg = t['hp']
+        baseFlameEffect = BattleParticles.createParticleEffect(file='cigar')
+        baseFlameSmall = BattleParticles.createParticleEffect(file='cigar')
+        baseFlameSmall.setScale(0.7)
+        baseFlameTrack = getPartTrack(baseFlameEffect, 3.8, 1.9, [baseFlameEffect, toon, 0])
+        baseFlameSmallTrack = getPartTrack(baseFlameSmall, 3.8, 1.9, [baseFlameSmall, toon, 0])
+        if dmg > 0:
+            headParts = toon.getHeadParts()
+            torsoParts = toon.getTorsoParts()
+            legsParts = toon.getLegsParts()
+            colorTrack = Sequence()
+            colorTrack.append(Wait(4.4))
+            colorTrack.append(Func(battle.movie.needRestoreColor))
+            colorTrack.append(changeColor(headParts))
+            colorTrack.append(changeColor(torsoParts))
+            colorTrack.append(changeColor(legsParts))
+            colorTrack.append(Wait(3.5))
+            colorTrack.append(resetColor(headParts))
+            colorTrack.append(resetColor(torsoParts))
+            colorTrack.append(resetColor(legsParts))
+            colorTrack.append(Func(battle.movie.clearRestoreColor))
+            baseFlameTracks += (baseFlameTrack,)
+            colorTracks += (colorTrack,)
+        else:
+            baseFlameTracks += (baseFlameSmallTrack,)
+
     damageAnims = []
     damageAnims.append(['cringe',
      0.01,
@@ -3417,12 +3429,13 @@ def doCigarSmoke(attack):
      0.4,
      1.2])
     damageAnims.extend(getSplicedLerpAnims('slip-forward', 0.31, 0.8, startTime=4.2))
-    toonTrack = getToonTrack(attack, damageDelay=4.8, splicedDamageAnims=damageAnims, dodgeDelay=3.9, dodgeAnimNames=['sidestep'])
+    toonTracks = Parallel()
+    for i in range(len(targets)):
+        tgt = targets[i]
+        toonTracks.append(getToonTrack(attack, damageDelay=4.8, splicedDamageAnims=damageAnims, dodgeDelay=3.9, dodgeAnimNames=['sidestep'], target=tgt))
+
     soundTrack = getSoundTrack('SA_filibuster.ogg', delay=4.0, node=suit)
-    if dmg > 0:
-        return Parallel(suitTrack, propTrack, baseFlameTrack, toonTrack, colorTrack, soundTrack)
-    else:
-        return Parallel(suitTrack, propTrack, baseFlameSmallTrack, toonTrack, soundTrack)
+    return Parallel(suitTrack, propTrack, *baseFlameTracks, toonTracks, *colorTracks, soundTrack)
 
 
 def doEvictionNotice(attack):

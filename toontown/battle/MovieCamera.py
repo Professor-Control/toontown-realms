@@ -547,7 +547,7 @@ def chooseSuitShot(attack, attackDuration):
         camTrack.append(defaultCamera(openShotDuration=1.2))
     elif name == 'ttrealms:write_off':
         camTrack.append(defaultCamera())
-    elif name == 'ttrealms:cigar_smoke':
+    elif name in ('ttrealms:cigar_smoke', 'ttrealms:cigar_smoke_group'):
         camTrack.append(defaultCamera())
     elif name == 'ttrealms:burn':
         camTrack.append(toonGroupShot(target, 2))
