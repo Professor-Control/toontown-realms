@@ -545,8 +545,9 @@ def getPropAppearTrack(prop, parent, posPoints, appearDelay, scaleUpPoint = Poin
     return propTrack
 
 
-def getPropThrowTrack(attack, prop, hitPoints = [], missPoints = [], hitDuration = 0.5, missDuration = 0.5, hitPointNames = 'none', missPointNames = 'none', lookAt = 'none', groundPointOffSet = 0, missScaleDown = None, parent = render):
-    target = attack['target'][0] # TODO: Something similar to getToonTrack where a target can be provided; otherwise, this is the default.
+def getPropThrowTrack(attack, prop, hitPoints = [], missPoints = [], hitDuration = 0.5, missDuration = 0.5, hitPointNames = 'none', missPointNames = 'none', lookAt = 'none', groundPointOffSet = 0, missScaleDown = None, parent = render, target = None):
+    if not target:
+        target = attack['target'][0]
     toon = target['toon']
     dmg = target['hp']
     battle = attack['battle']
