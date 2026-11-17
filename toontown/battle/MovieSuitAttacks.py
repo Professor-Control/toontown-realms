@@ -2026,18 +2026,16 @@ def doPlayHardball(attack):
     dmg = target['hp']
     ball = globalPropPool.getProp('baseball')
     suitType = getSuitBodyType(attack['suitName'])
-    if suitType == 'a':
-        suitDelay = 1.09
-        damageDelay = 2.76
-        dodgeDelay = 1.86
-    elif suitType == 'b':
+    if suitType in ('a', 'b'):
         suitDelay = 1.79
         damageDelay = 3.46
         dodgeDelay = 2.56
+        soundDelay = 3.1
     elif suitType == 'c':
         suitDelay = 1.09
         damageDelay = 2.76
         dodgeDelay = 1.86
+        soundDelay = 2.4
     suitTrack = getSuitTrack(attack)
     ballPosPoints = [Point3(0.04, 0.03, -0.31), VBase3(-1.152, 86.581, -76.784)]
     propTrack = Sequence(getPropAppearTrack(ball, suit.getRightHand(), ballPosPoints, 0.8, Point3(5, 5, 5), scaleUpTime=0.5))
@@ -2059,7 +2057,7 @@ def doPlayHardball(attack):
         propTrack.append(LerpPosInterval(ball, 0.1, Point3(x, y + 8.5, z + 0.6)))
         propTrack.append(LerpPosInterval(ball, 0.1, Point3(x, y + 9, z + 0.2)))
         propTrack.append(Wait(0.4))
-        soundTrack = getSoundTrack('SA_hardball_impact_only.ogg', delay=2.8, node=suit)
+        soundTrack = getSoundTrack('SA_hardball_impact_only.ogg', delay=soundDelay - 0.3, node=suit)
     else:
         propTrack.append(LerpPosInterval(ball, 0.5, Point3(x, y + 2, z)))
         propTrack.append(LerpPosInterval(ball, 0.4, Point3(x, y - 1, z + 2)))
@@ -2069,7 +2067,7 @@ def doPlayHardball(attack):
         propTrack.append(LerpPosInterval(ball, 0.1, Point3(x, y - 5.5, z + 0.6)))
         propTrack.append(LerpPosInterval(ball, 0.1, Point3(x, y - 6, z + 0.2)))
         propTrack.append(Wait(0.4))
-        soundTrack = getSoundTrack('SA_hardball.ogg', delay=3.1, node=suit)
+        soundTrack = getSoundTrack('SA_hardball.ogg', delay=soundDelay, node=suit)
     propTrack.append(LerpScaleInterval(ball, 0.3, MovieUtil.PNT3_NEARZERO))
     propTrack.append(Func(MovieUtil.removeProp, ball))
     propTrack.append(Func(battle.movie.clearRenderProp, ball))
@@ -4059,18 +4057,16 @@ def doSnowball(attack):
     dmg = target['hp']
     ball = globalPropPool.getProp('snowball')
     suitType = getSuitBodyType(attack['suitName'])
-    if suitType == 'a':
-        suitDelay = 1.09
-        damageDelay = 2.76
-        dodgeDelay = 1.86
-    elif suitType == 'b':
+    if suitType in ('a', 'b'):
         suitDelay = 1.79
         damageDelay = 3.46
         dodgeDelay = 2.56
+        soundDelay = 3.1
     elif suitType == 'c':
         suitDelay = 1.09
         damageDelay = 2.76
         dodgeDelay = 1.86
+        soundDelay = 2.4
     suitTrack = getSuitTrack(attack)
     ballPosPoints = [Point3(0.04, 0.03, -0.31), VBase3(-1.152, 86.581, -76.784)]
     propTrack = Sequence(getPropAppearTrack(ball, suit.getRightHand(), ballPosPoints, 0.8, Point3(1, 1, 1), scaleUpTime=0.5))
@@ -4092,7 +4088,7 @@ def doSnowball(attack):
         propTrack.append(ActorInterval(splat, 'splat-snowball'))
         propTrack.append(Func(MovieUtil.removeProp, splat))
         propTrack.append(Wait(0.4))
-        soundTrack = getSoundTrack('SA_hardball_impact_only.ogg', delay=2.8, node=suit)
+        soundTrack = getSoundTrack('SA_hardball_impact_only.ogg', delay=soundDelay - 0.3, node=suit)
     else:
         propTrack.append(LerpPosInterval(ball, 0.4, Point3(x, y - 3, z)))
         propTrack.append(Func(MovieUtil.removeProp, ball))
@@ -4102,7 +4098,7 @@ def doSnowball(attack):
         propTrack.append(ActorInterval(splat, 'splat-snowball'))
         propTrack.append(Func(MovieUtil.removeProp, splat))        
         propTrack.append(Wait(0.4))
-        soundTrack = getSoundTrack('SA_hardball.ogg', delay=3.1, node=suit)
+        soundTrack = getSoundTrack('SA_hardball.ogg', delay=soundDelay, node=suit)
     damageAnims = [['conked',
       damageDelay,
       0.01,
