@@ -144,7 +144,7 @@ def doSuitAttack(attack):
         suitTrack = doChomp(attack)
     elif name in ('ttrealms:cigar_smoke', 'ttrealms:cigar_smoke_group'):
         suitTrack = doCigarSmoke(attack)
-    elif name == 'ttrealms:clip_on_tie':
+    elif name in ('ttrealms:clip_on_tie', 'ttrealms:clip_on_tie_group'):
         suitTrack = doClipOnTie(attack)
     elif name == 'ttrealms:crunch':
         suitTrack = doCrunch(attack)
@@ -758,10 +758,7 @@ def getSoundTrack(fileName, delay = 0.01, duration = None, node = None):
 def doClipOnTie(attack):
     suit = attack['suit']
     battle = attack['battle']
-    target = attack['target']
-    toon = target[0]['toon']
-    dmg = target[0]['hp']
-    tie = globalPropPool.getProp('clip-on-tie')
+    targets = attack['target']
     suitType = getSuitBodyType(attack['suitName'])
     if suitType == 'a':
         throwDelay = 2.17
@@ -776,17 +773,24 @@ def doClipOnTie(attack):
         damageDelay = 2.61
         dodgeDelay = 2.34
     suitTrack = getSuitTrack(attack)
-    posPoints = [Point3(0.66, 0.51, 0.28), VBase3(-69.652, -17.199, 67.96)]
-    tiePropTrack = Sequence(getPropAppearTrack(tie, suit.getRightHand(), posPoints, 0.5, MovieUtil.PNT3_ONE, scaleUpTime=0.5, poseExtraArgs=['clip-on-tie', 0]))
-    if dmg > 0:
-        tiePropTrack.append(ActorInterval(tie, 'clip-on-tie', duration=throwDelay, startTime=1.1))
-    else:
-        tiePropTrack.append(Wait(throwDelay))
-    tiePropTrack.append(Func(tie.setHpr, Point3(0, -90, 0)))
-    tiePropTrack.append(getPropThrowTrack(attack, tie, [__toonFacePoint(toon)], [__toonGroundPoint(attack, toon, 0.1)], hitDuration=0.4, missDuration=0.8, missScaleDown=1.2))
-    toonTrack = getToonTrack(attack, damageDelay, ['conked'], dodgeDelay, ['sidestep'])
+    tiePropTracks = ()
+    for t in targets:
+        toon = t['toon']
+        dmg = t['hp']
+        tie = globalPropPool.getProp('clip-on-tie')
+        posPoints = [Point3(0.66, 0.51, 0.28), VBase3(-69.652, -17.199, 67.96)]
+        tiePropTrack = Sequence(getPropAppearTrack(tie, suit.getRightHand(), posPoints, 0.5, MovieUtil.PNT3_ONE, scaleUpTime=0.5, poseExtraArgs=['clip-on-tie', 0]))
+        if dmg > 0:
+            tiePropTrack.append(ActorInterval(tie, 'clip-on-tie', duration=throwDelay, startTime=1.1))
+        else:
+            tiePropTrack.append(Wait(throwDelay))
+        tiePropTrack.append(Func(tie.setHpr, Point3(0, -90, 0)))
+        tiePropTrack.append(getPropThrowTrack(attack, tie, [__toonFacePoint(toon)], [__toonGroundPoint(attack, toon, 0.1)], hitDuration=0.4, missDuration=0.8, missScaleDown=1.2, target=t))
+        tiePropTracks += (tiePropTrack,)
+
+    toonTracks = getToonTracks(attack, damageDelay, ['conked'], dodgeDelay, ['sidestep'])
     throwSound = getSoundTrack('SA_powertie_throw.ogg', delay=throwDelay + 1, node=suit)
-    return Parallel(suitTrack, toonTrack, tiePropTrack, throwSound)
+    return Parallel(suitTrack, toonTracks, *tiePropTracks, throwSound)
 
 
 def getPhoneTrack(suit, propDelay = 0.3):

@@ -435,7 +435,7 @@ def chooseSuitShot(attack, attackDuration):
         camTrack.append(defaultCamera(openShotDuration=2.9))
     elif name == 'ttrealms:chomp':
         camTrack.append(defaultCamera(openShotDuration=2.8))
-    elif name == 'ttrealms:clip_on_tie':
+    elif name in ('ttrealms:clip_on_tie', 'ttrealms:clip_on_tie_group'):
         camTrack.append(defaultCamera(openShotDuration=3.3))
     elif name == 'ttrealms:crunch':
         camTrack.append(defaultCamera(openShotDuration=3.4))
