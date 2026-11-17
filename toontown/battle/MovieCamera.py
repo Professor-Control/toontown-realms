@@ -399,7 +399,7 @@ def chooseSuitShot(attack, attackDuration):
     groupStatus = attack['group']
     target = attack['target']
     if groupStatus == 'single':
-        toon = target['toon']
+        toon = target[0]['toon']
     if 'suit' in attack:
         suit = attack['suit']
     name = attack['identifier']
@@ -411,7 +411,7 @@ def chooseSuitShot(attack, attackDuration):
         if attack['group'] == 'group':
             return randomGroupAttackCam(attack['suit'], target, attack['battle'], attackDuration, openShotDuration)
         else:
-            return randomAttackCam(attack['suit'], target['toon'], attack['battle'], attackDuration, openShotDuration, 'suit')
+            return randomAttackCam(attack['suit'], target[0]['toon'], attack['battle'], attackDuration, openShotDuration, 'suit')
 
     if name == 'ttrealms:active_state' or name == 'ttrealms:stomp':
         camTrack.append(avatarStompShot(suit, battle))
@@ -524,7 +524,7 @@ def chooseSuitShot(attack, attackDuration):
     elif name == 'ttrealms:schmooze':
         camTrack.append(defaultCamera(openShotDuration=2.8))
     elif name == 'ttrealms:shadow_toon':
-        camTrack.append(shadowShot(attack['suit'], target['toon'], attack['battle'], attack, attackDuration - 3.3))
+        camTrack.append(shadowShot(attack['suit'], target[0]['toon'], attack['battle'], attack, attackDuration - 3.3))
     elif name == 'ttrealms:shake':
         shakeIntensity = 1.75
         camTrack.append(suitCameraShakeShot(suit, attackDuration, shakeIntensity))
@@ -550,9 +550,9 @@ def chooseSuitShot(attack, attackDuration):
     elif name in ('ttrealms:cigar_smoke', 'ttrealms:cigar_smoke_group'):
         camTrack.append(defaultCamera())
     elif name == 'ttrealms:burn':
-        camTrack.append(toonGroupShot(target, 2))
+        camTrack.append(toonGroupShot(target[0], 2))
     elif name == 'ttrealms:hail':
-        camTrack.append(toonGroupShot(target, 3))
+        camTrack.append(toonGroupShot(target[0], 3))
     else:
         notify.warning('unknown attack id in chooseSuitShot: %s using default cam' % name)
         camTrack.append(defaultCamera())
@@ -567,13 +567,11 @@ def chooseSuitShot(attack, attackDuration):
     pbpTrack = pbpText.getShowInterval(displayName, 3.5)
     target = attack['target']
     atkHit: bool = False
-    if 'hp' in target:
-        atkHit = target['hp'] > 0
-    else:
-        for t in target:
-            if t['hp'] > 0:
-                atkHit = True
-                break
+    for t in target:
+        if t['hp'] > 0:
+            atkHit = True
+            break
+
     if atkHit and description:
         pbpDescText = attack['playByPlayDescText']
         pbpDescTrack = Sequence(
@@ -592,9 +590,9 @@ def chooseSuitCloseShot(attack, openDuration, openName, attackDuration):
     groupStatus = attack['group']
     diedTrack = None
     if groupStatus == 'single':
-        av = attack['target']['toon']
+        av = attack['target'][0]['toon']
         shotChoices = [avatarCloseUpThreeQuarterRightShot, suitGroupThreeQuarterLeftBehindShot]
-        died = attack['target']['died']
+        died = attack['target'][0]['died']
         if died != 0:
             pbpText = attack['playByPlayText']
             diedText = av.getName() + ' was defeated!'
