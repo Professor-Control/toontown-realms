@@ -1331,10 +1331,10 @@ def doBuzzWord(attack):
         damageDelay = 4.5
         dodgeDelay = 3.8
     elif suitType == 'b':
-        partDelay = 1.3
-        partDuration = 2
-        damageDelay = 2.5
-        dodgeDelay = 1.8
+        partDelay = 4.0
+        partDuration = 2.2
+        damageDelay = 4.5
+        dodgeDelay = 3.8
     elif suitType == 'c':
         partDelay = 4.0
         partDuration = 2.2
