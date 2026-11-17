@@ -416,10 +416,16 @@ def getSuitTrack(attack, delay = 1e-06, splicedAnims = None):
     return track
 
 
-def getSuitAnimTrack(attack, delay = 0):
+def getSuitAnimTrack(attack, delay = 0.0, splicedAnims = None):
     suit = attack['suit']
     taunt = attack['taunt']
-    return Sequence(Wait(delay), Func(suit.setChatAbsolute, taunt, CFSpeech | CFTimeout), ActorInterval(attack['suit'], attack['animName']), Func(suit.clearChat))
+    track = Sequence(Wait(delay), Func(suit.setChatAbsolute, taunt, CFSpeech | CFTimeout))
+    if splicedAnims:
+        track.append(getSplicedAnimsTrack(splicedAnims, actor=suit))
+    else:
+        track.append(ActorInterval(suit, attack['animName']))
+    track.append(suit.clearChat)
+    return track
 
 
 def getPartTrack(particleEffect, startDelay, durationDelay, partExtraArgs):
