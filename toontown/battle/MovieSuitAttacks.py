@@ -1748,9 +1748,15 @@ def doHalfWindsor(attack):
     toon = target['toon']
     dmg = target['hp']
     tie = globalPropPool.getProp('double-windsor' if attack['identifier'] == 'ttrealms:double_windsor' else 'half-windsor')
-    throwDelay = 2.17
-    damageDelay = 3.4
-    dodgeDelay = 2.4
+    suitType = getSuitBodyType(attack['suitName'])
+    if suitType == 'c':
+        throwDelay = 1.45
+        damageDelay = 2.71
+        dodgeDelay = 1.64
+    else:
+        throwDelay = 2.17
+        damageDelay = 3.4
+        dodgeDelay = 2.4
     suitTrack = getSuitTrack(attack)
     posPoints = [Point3(0.02, 0.88, 0.48), VBase3(99, -3, -108.2)]
     tiePropTrack = getPropAppearTrack(tie, suit.getRightHand(), posPoints, 0.5, Point3(7, 7, 7), scaleUpTime=0.5)
@@ -2106,9 +2112,9 @@ def doPowerTie(attack):
     tiePropTrack.append(Func(tie.setBillboardPointEye))
     tiePropTrack.append(getPropThrowTrack(attack, tie, [__toonFacePoint(toon)], [__toonGroundPoint(attack, toon, 0.1)], hitDuration=0.4, missDuration=0.8))
     toonTrack = getToonTrack(attack, damageDelay, ['conked'], dodgeDelay, ['sidestep'])
-    throwSound = getSoundTrack('SA_powertie_throw.ogg', delay=2.3, node=suit)
+    throwSound = getSoundTrack('SA_powertie_throw.ogg', delay=throwDelay + 0.85, node=suit)
     if dmg > 0:
-        hitSound = getSoundTrack('SA_powertie_impact.ogg', delay=2.9, node=suit)
+        hitSound = getSoundTrack('SA_powertie_impact.ogg', delay=throwDelay + 1.45, node=suit)
         return Parallel(suitTrack, toonTrack, tiePropTrack, throwSound, hitSound)
     else:
         return Parallel(suitTrack, toonTrack, tiePropTrack, throwSound)
