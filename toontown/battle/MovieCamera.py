@@ -471,7 +471,7 @@ def chooseSuitShot(attack, attackDuration):
         camTrack.append(defaultCamera(openShotDuration=1.4))
     elif name == 'ttrealms:guilt_trip':
         camTrack.append(defaultCamera(openShotDuration=0.9))
-    elif name == 'ttrealms:hang_up':
+    elif name in ('ttrealms:hang_up', 'ttrealms:hang_up_group'):
         camTrack.append(defaultCamera(openShotDuration=5.1))
     elif name == 'ttrealms:hot_air':
         camTrack.append(defaultCamera(openShotDuration=2.5))

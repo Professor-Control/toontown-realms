@@ -190,7 +190,7 @@ def doSuitAttack(attack):
         suitTrack = doGlowerPower(attack)
     elif name == 'ttrealms:guilt_trip':
         suitTrack = doGuiltTrip(attack)
-    elif name == 'ttrealms:hang_up':
+    elif name in ('ttrealms:hang_up', 'ttrealms:hang_up_group'):
         suitTrack = doHangUp(attack)
     elif name == 'ttrealms:head_shrink':
         suitTrack = doHeadShrink(attack)
@@ -2472,10 +2472,19 @@ def doTremor(attack):
 def doHangUp(attack):
     suit = attack['suit']
     battle = attack['battle']
+    # TODO: Have a more sophisticated system for multiple targets on a single-target attack.
+    if attack['group'] == 'group':
+        targets = attack['target']
+    else:
+        targets = [attack['target']]
     suitTrack = getSuitTrack(attack)
     propTrack = getPhoneTrack(suit)
-    toonTrack = getToonTrack(attack, 5.5, ['slip-backward'], 4.7, ['jump'])
-    return Parallel(suitTrack, toonTrack, propTrack)
+    toonTracks = Parallel()
+    for i in range(len(targets)):
+        tgt = targets[i]
+        toonTracks.append(getToonTrack(attack, 5.5, ['slip-backward'], 4.7, ['jump'], target=tgt))
+
+    return Parallel(suitTrack, toonTracks, propTrack)
 
 
 def doRedTape(attack):
