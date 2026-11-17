@@ -443,6 +443,8 @@ def chooseSuitShot(attack, attackDuration):
         camTrack.append(defaultCamera(openShotDuration=1.7))
     elif name == 'ttrealms:double_talk':
         camTrack.append(defaultCamera(openShotDuration=3.9))
+    elif name in ('ttrealms:double_windsor', 'ttrealms:half_windsor'):
+        camTrack.append(defaultCamera(openShotDuration=2.8))
     elif name == 'ttrealms:eviction_notice':
         camTrack.append(defaultCamera(openShotDuration=3.2))
     elif name == 'ttrealms:evil_glare':
@@ -463,8 +465,6 @@ def chooseSuitShot(attack, attackDuration):
         camTrack.append(defaultCamera(openShotDuration=2.6))
     elif name == 'ttrealms:freeze_assets' or name == 'ttrealms:frosty_reception':
         camTrack.append(defaultCamera(openShotDuration=2.5))
-    elif name == 'ttrealms:half_windsor':
-        camTrack.append(defaultCamera(openShotDuration=2.8))
     elif name == 'ttrealms:head_shrink':
         camTrack.append(defaultCamera(openShotDuration=1.3))
     elif name == 'ttrealms:glower_power':

@@ -154,6 +154,8 @@ def doSuitAttack(attack):
         suitTrack = doDormantState(attack)
     elif name == 'ttrealms:double_talk':
         suitTrack = doDoubleTalk(attack)
+    elif name in ('ttrealms:double_windsor', 'ttrealms:half_windsor'):
+        suitTrack = doHalfWindsor(attack)
     elif name == 'ttrealms:downsize':
         suitTrack = doDownsize(attack)
     elif name == 'ttrealms:eviction_notice':
@@ -188,8 +190,6 @@ def doSuitAttack(attack):
         suitTrack = doGlowerPower(attack)
     elif name == 'ttrealms:guilt_trip':
         suitTrack = doGuiltTrip(attack)
-    elif name == 'ttrealms:half_windsor':
-        suitTrack = doHalfWindsor(attack)
     elif name == 'ttrealms:hang_up':
         suitTrack = doHangUp(attack)
     elif name == 'ttrealms:head_shrink':
@@ -1730,7 +1730,7 @@ def doHalfWindsor(attack):
     target = attack['target']
     toon = target['toon']
     dmg = target['hp']
-    tie = globalPropPool.getProp('half-windsor')
+    tie = globalPropPool.getProp('double-windsor' if attack['identifier'] == 'ttrealms:double_windsor' else 'half-windsor')
     throwDelay = 2.17
     damageDelay = 3.4
     dodgeDelay = 2.4
