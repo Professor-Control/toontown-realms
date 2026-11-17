@@ -708,13 +708,7 @@ def heldRelativeShot(other, x, y, z, h, p, r, duration, name = 'heldRelativeShot
 
 
 def motionShot(x, y, z, h, p, r, duration, other = None, name = 'motionShot'):
-    if other:
-        posTrack = LerpPosInterval(camera, duration, pos=Point3(x, y, z), other=other)
-        hprTrack = LerpHprInterval(camera, duration, hpr=Point3(h, p, r), other=other)
-    else:
-        posTrack = LerpPosInterval(camera, duration, pos=Point3(x, y, z))
-        hprTrack = LerpHprInterval(camera, duration, hpr=Point3(h, p, r))
-    return Parallel(posTrack, hprTrack)
+    return LerpPosHprInterval(camera, duration, pos=Point3(x, y, z), hpr=Point3(h, p, r), other=other, name=name)
 
 def allGroupLowShot(avatar, duration, numAvatars = 1):
     x = 15
