@@ -2419,12 +2419,13 @@ def doFilibuster(attack):
     sprayTrack3 = getPartTrack(sprayEffect3, partDelay + 1.6, partDuration, [sprayEffect3, suit, 0])
     sprayTrack4 = getPartTrack(sprayEffect4, partDelay + 2.4, partDuration, [sprayEffect4, suit, 0])
     damageAnims = []
-    for i in range(0, 4):
+    for i in range(0, 3):
         damageAnims.append(['cringe',
          1e-05,
          0.3,
          0.8])
 
+    damageAnims.append(['cringe', 1e-05, 0.3])
     toonTrack = getToonTrack(attack, damageDelay=damageDelay, splicedDamageAnims=damageAnims, dodgeDelay=dodgeDelay, dodgeAnimNames=['sidestep'])
     soundTrack = getSoundTrack('SA_filibuster.ogg', delay=1.1, node=suit)
     if dmg > 0:
