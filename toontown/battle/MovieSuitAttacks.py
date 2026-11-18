@@ -242,7 +242,7 @@ def doSuitAttack(attack):
         suitTrack = doRubOut(attack)
     elif name == 'ttrealms:sacked':
         suitTrack = doSacked(attack)
-    elif name == 'ttrealms:sandtrap':
+    elif name == 'ttrealms:sand_trap':
         suitTrack = doDefault(attack)
     elif name == 'ttrealms:schmooze':
         suitTrack = doSchmooze(attack)
