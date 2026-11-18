@@ -421,11 +421,11 @@ def chooseSuitShot(attack, attackDuration):
         camTrack.append(avatarHeatedDiscussionShot(suit, battle))
     elif name == 'ttrealms:audit':
         camTrack.append(defaultCamera())
-    elif name == 'ttrealms:bite':
+    elif name in ('ttrealms:bite', 'ttrealms:bite_group'):
         camTrack.append(defaultCamera(openShotDuration=2.8))
-    elif name == 'ttrealms:bounce_check':
+    elif name in ('ttrealms:bounce_check', 'ttrealms:bounce_check_group'):
         camTrack.append(defaultCamera())
-    elif name == 'ttrealms:brainstorm':
+    elif name in ('ttrealms:brainstorm', 'ttrealms:brainstorm_group'):
         camTrack.append(defaultCamera(openShotDuration=2.4))
     elif name == 'ttrealms:buzz_word':
         camTrack.append(defaultCamera(openShotDuration=4.7))
@@ -433,7 +433,7 @@ def chooseSuitShot(attack, attackDuration):
         camTrack.append(defaultCamera())
     elif name == 'ttrealms:canned':
         camTrack.append(defaultCamera(openShotDuration=2.9))
-    elif name == 'ttrealms:chomp':
+    elif name in ('ttrealms:chomp', 'ttrealms:chomp_group'):
         camTrack.append(defaultCamera(openShotDuration=2.8))
     elif name in ('ttrealms:clip_on_tie', 'ttrealms:clip_on_tie_group'):
         camTrack.append(defaultCamera(openShotDuration=3.3))
@@ -441,15 +441,15 @@ def chooseSuitShot(attack, attackDuration):
         camTrack.append(defaultCamera(openShotDuration=3.4))
     elif name == 'ttrealms:demotion':
         camTrack.append(defaultCamera(openShotDuration=1.7))
-    elif name == 'ttrealms:double_talk':
+    elif name in ('ttrealms:double_talk', 'ttrealms:double_talk_group'):
         camTrack.append(defaultCamera(openShotDuration=3.9))
-    elif name in ('ttrealms:double_windsor', 'ttrealms:half_windsor'):
+    elif name in ('ttrealms:double_windsor', 'ttrealms:double_windsor_group', 'ttrealms:half_windsor', 'ttrealms:half_windsor_group'):
         camTrack.append(defaultCamera(openShotDuration=2.8))
-    elif name == 'ttrealms:eviction_notice':
+    elif name in ('ttrealms:eviction_notice', 'ttrealms:eviction_notice_group'):
         camTrack.append(defaultCamera(openShotDuration=3.2))
-    elif name == 'ttrealms:evil_glare':
+    elif name in ('ttrealms:evil_glare', 'ttrealms:evil_glare_group'):
         camTrack.append(defaultCamera(openShotDuration=2.7))
-    elif name == 'ttrealms:evil_eye':
+    elif name in ('ttrealms:evil_eye', 'ttrealms:evil_eye_group'):
         camTrack.append(defaultCamera(openShotDuration=2.7))
     elif name == 'ttrealms:filibuster':
         camTrack.append(defaultCamera(openShotDuration=2.7))
@@ -457,13 +457,13 @@ def chooseSuitShot(attack, attackDuration):
         camTrack.append(defaultCamera(openShotDuration=3.2))
     elif name == 'ttrealms:finger_wag':
         camTrack.append(defaultCamera(openShotDuration=2.3))
-    elif name == 'ttrealms:fired' or name == 'ttrealms:heated_discussion':
+    elif name in ('ttrealms:fired', 'ttrealms:fired_group', 'ttrealms:heated_discussion'):
         camTrack.append(defaultCamera(openShotDuration=1.7))
     elif name == 'ttrealms:flex':
         camTrack.append(defaultCamera(openShotDuration=1.0))
-    elif name == 'ttrealms:fountain_pen':
+    elif name in ('ttrealms:fountain_pen', 'ttrealms:fountain_pen_group'):
         camTrack.append(defaultCamera(openShotDuration=2.6))
-    elif name == 'ttrealms:freeze_assets' or name == 'ttrealms:frosty_reception':
+    elif name in ('ttrealms:freeze_assets', 'ttrealms:freeze_assets_group', 'ttrealms:frosty_reception'):
         camTrack.append(defaultCamera(openShotDuration=2.5))
     elif name == 'ttrealms:head_shrink':
         camTrack.append(defaultCamera(openShotDuration=1.3))
@@ -479,25 +479,25 @@ def chooseSuitShot(attack, attackDuration):
         camTrack.append(defaultCamera())
     elif name == 'ttrealms:legalese':
         camTrack.append(defaultCamera(openShotDuration=1.5))
-    elif name == 'ttrealms:liquidate':
+    elif name in ('ttrealms:liquidate', 'ttrealms:liquidate_group'):
         camTrack.append(defaultCamera(openShotDuration=2.5))
-    elif name == 'ttrealms:market_crash':
+    elif name in ('ttrealms:market_crash', 'ttrealms:market_crash_group'):
         camTrack.append(defaultCamera(openShotDuration=2.9))
     elif name == 'ttrealms:mumbo_jumbo':
         camTrack.append(defaultCamera(openShotDuration=2.8))
     elif name == 'ttrealms:paradigm_shift':
         camTrack.append(defaultCamera(openShotDuration=1.6))
-    elif name == 'ttrealms:pecking_order':
+    elif name in ('ttrealms:pecking_order', 'ttrealms:pecking_order_group'):
         camTrack.append(defaultCamera(openShotDuration=2.8))
-    elif name == 'ttrealms:play_hardball' or name == 'ttrealms:snowball':
+    elif name in ('ttrealms:play_hardball', 'ttrealms:play_hardball_group', 'ttrealms:snowball', 'ttrealms:snowball_group'):
         camTrack.append(defaultCamera(openShotDuration=2.3))
     elif name == 'ttrealms:pick_pocket':
         camTrack.append(allGroupLowShot(suit, 2.7, greatestTeamCount))
-    elif name == 'ttrealms:pink_slip':
+    elif name in ('ttrealms:pink_slip', 'ttrealms:pink_slip_group'):
         camTrack.append(defaultCamera(openShotDuration=2.8))
     elif name == 'ttrealms:pound_key':
         camTrack.append(defaultCamera(openShotDuration=2.8))
-    elif name == 'ttrealms:power_tie':
+    elif name in ('ttrealms:power_tie', 'ttrealms:power_tie_group'):
         camTrack.append(defaultCamera(openShotDuration=2.4))
     elif name == 'ttrealms:power_trip':
         camTrack.append(defaultCamera(openShotDuration=1.1))
@@ -505,19 +505,19 @@ def chooseSuitShot(attack, attackDuration):
         shakeIntensity = 5.15
         quake = 1
         camTrack.append(suitCameraShakeShot(suit, attackDuration, shakeIntensity, quake))
-    elif name == 'ttrealms:razzle_dazzle':
+    elif name in ('ttrealms:razzle_dazzle', 'ttrealms:razzle_dazzle_group'):
         camTrack.append(defaultCamera(openShotDuration=2.2))
-    elif name == 'ttrealms:red_tape':
+    elif name in ('ttrealms:red_tape', 'ttrealms:red_tape_group'):
         camTrack.append(defaultCamera(openShotDuration=3.5))
     elif name == 'ttrealms:re_org':
         camTrack.append(defaultCamera(openShotDuration=1.1))
-    elif name == 'ttrealms:restraining_order':
+    elif name in ('ttrealms:restraining_order', 'ttrealms:restraining_order_group'):
         camTrack.append(defaultCamera(openShotDuration=2.8))
     elif name == 'ttrealms:rolodex':
         camTrack.append(defaultCamera())
-    elif name == 'ttrealms:rubber_stamp':
+    elif name in ('ttrealms:rubber_stamp', 'ttrealms:rubber_stamp_group'):
         camTrack.append(defaultCamera(openShotDuration=3.2))
-    elif name == 'ttrealms:rub_out':
+    elif name in ('ttrealms:rub_out', 'ttrealms:rub_out_group'):
         camTrack.append(defaultCamera(openShotDuration=2.2))
     elif name == 'ttrealms:sacked':
         camTrack.append(defaultCamera(openShotDuration=2.9))
@@ -536,7 +536,7 @@ def chooseSuitShot(attack, attackDuration):
         camTrack.append(defaultCamera(openShotDuration=1.7))
     elif name == 'ttrealms:tabulate':
         camTrack.append(defaultCamera())
-    elif name == 'ttrealms:tee_off':
+    elif name in ('ttrealms:tee_off', 'ttrealms:tee_off_group'):
         camTrack.append(defaultCamera(openShotDuration=4.5))
     elif name == 'ttrealms:tremor':
         shakeIntensity = 0.25
@@ -545,7 +545,7 @@ def chooseSuitShot(attack, attackDuration):
         camTrack.append(defaultCamera())
     elif name in ('ttrealms:withdrawal', 'ttrealms:withdrawal_group'):
         camTrack.append(defaultCamera(openShotDuration=1.2))
-    elif name == 'ttrealms:write_off':
+    elif name in ('ttrealms:write_off', 'ttrealms:write_off_group'):
         camTrack.append(defaultCamera())
     elif name in ('ttrealms:cigar_smoke', 'ttrealms:cigar_smoke_group'):
         camTrack.append(defaultCamera())
