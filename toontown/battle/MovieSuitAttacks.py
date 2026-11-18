@@ -752,6 +752,50 @@ def getSoundTrack(fileName, delay = 0.01, duration = 0.0, node = None):
     return Sequence(Wait(delay), SoundInterval(soundEffect, duration=duration, node=node))
 
 
+def getColorTrack(battle, toon, delay, duration, color):
+    '''
+    Create a convenient track for coloring a Toon's entire body.
+    NOTE: Only compatible with immediate color switches; currently not compatible with Cigar Smoke's lerp-ing color switch.
+
+    Parameters:
+        battle: The battle.  This is to toggle the needRestoreColor flag.
+        toon: The Toon whose color will change.
+        delay (float): How long before the Toon's color changes.
+        duration (float): How long the color remains before being removed.
+        color (Vec4): The color to change the Toon to.
+
+    Returns:
+        out (Sequence): The assembled sequence for changing the Toon's color.
+    '''
+
+    def changeColor(parts):
+        for partNum in range(0, parts.getNumPaths()):
+            nextPart = parts.getPath(partNum)
+            nextPart.setColorScale(color)
+
+
+    def resetColor(parts):
+        for partNum in range(0, parts.getNumPaths()):
+            nextPart = parts.getPath(partNum)
+            nextPart.clearColorScale()
+
+    headParts = toon.getHeadParts()
+    torsoParts = toon.getTorsoParts()
+    legsParts = toon.getLegsParts()
+    return Sequence(
+        Wait(delay),
+        Func(battle.movie.needRestoreColor),
+        Func(changeColor, headParts),
+        Func(changeColor, torsoParts),
+        Func(changeColor, legsParts),
+        Wait(duration),
+        Func(resetColor, headParts),
+        Func(resetColor, torsoParts),
+        Func(resetColor, legsParts),
+        Func(battle.movie.clearRestoreColor)
+    )
+
+
 def doClipOnTie(attack):
     suit = attack['suit']
     battle = attack['battle']
@@ -2326,38 +2370,8 @@ def doHotAir(attack):
     baseFlameTrack = getPartTrack(baseFlameEffect, flameDelay, flameDuration, [baseFlameEffect, toon, 0])
     flameTrack = getPartTrack(flameEffect, flameDelay, flameDuration, [flameEffect, toon, 0])
     flecksTrack = getPartTrack(flecksEffect, flecksDelay, flecksDuration, [flecksEffect, toon, 0])
-
-    def changeColor(parts):
-        track = Parallel()
-        for partNum in range(0, parts.getNumPaths()):
-            nextPart = parts.getPath(partNum)
-            track.append(Func(nextPart.setColorScale, Vec4(0, 0, 0, 1)))
-
-        return track
-
-    def resetColor(parts):
-        track = Parallel()
-        for partNum in range(0, parts.getNumPaths()):
-            nextPart = parts.getPath(partNum)
-            track.append(Func(nextPart.clearColorScale))
-
-        return track
-
     if dmg > 0:
-        headParts = toon.getHeadParts()
-        torsoParts = toon.getTorsoParts()
-        legsParts = toon.getLegsParts()
-        colorTrack = Sequence()
-        colorTrack.append(Wait(4.0))
-        colorTrack.append(Func(battle.movie.needRestoreColor))
-        colorTrack.append(changeColor(headParts))
-        colorTrack.append(changeColor(torsoParts))
-        colorTrack.append(changeColor(legsParts))
-        colorTrack.append(Wait(3.5))
-        colorTrack.append(resetColor(headParts))
-        colorTrack.append(resetColor(torsoParts))
-        colorTrack.append(resetColor(legsParts))
-        colorTrack.append(Func(battle.movie.clearRestoreColor))
+        colorTrack = getColorTrack(battle, toon, 4.0, 3.5, Vec4(0, 0, 0, 1))
     damageAnims = []
     damageAnims.append(['cringe',
      0.01,
@@ -2824,23 +2838,6 @@ def doFired(attack):
     BattleParticles.loadParticles()
     suitTrack = getSuitTrack(attack)
     partTracks = ()
-
-    def changeColor(parts):
-        track = Parallel()
-        for partNum in range(0, parts.getNumPaths()):
-            nextPart = parts.getPath(partNum)
-            track.append(Func(nextPart.setColorScale, Vec4(0, 0, 0, 1)))
-
-        return track
-
-    def resetColor(parts):
-        track = Parallel()
-        for partNum in range(0, parts.getNumPaths()):
-            nextPart = parts.getPath(partNum)
-            track.append(Func(nextPart.clearColorScale))
-
-        return track
-
     colorTracks = ()
     for t in targets:
         toon = t['toon']
@@ -2867,10 +2864,7 @@ def doFired(attack):
         flameSmallTrack = getPartTrack(flameSmall, 1.0, 1.9, [flameSmall, toon, 0])
         flecksSmallTrack = getPartTrack(flecksSmall, 1.8, 1.1, [flecksSmall, toon, 0])
         if dmg > 0:
-            headParts = toon.getHeadParts()
-            torsoParts = toon.getTorsoParts()
-            legsParts = toon.getLegsParts()
-            colorTrack = Sequence(Wait(2.0), Func(battle.movie.needRestoreColor), changeColor(headParts), changeColor(torsoParts), changeColor(legsParts), Wait(3.5), resetColor(headParts), resetColor(torsoParts), resetColor(legsParts), Func(battle.movie.clearRestoreColor))
+            colorTrack = getColorTrack(battle, toon, 2.0, 3.5, Vec4(0, 0, 0, 1))
             partTracks += (baseFlameTrack, flameTrack, flecksTrack)
             colorTracks += (colorTrack,)
         else:
@@ -3509,42 +3503,12 @@ def doWithdrawal(attack):
     suitTrack = getSuitAnimTrack(attack)
     partTrack = getPartTrack(particleEffect, 1e-05, suitTrack.getDuration() + 1.2, [particleEffect, suit, 0])
     toonTracks = getToonTracks(attack, damageDelay=1.2, damageAnimNames=['cringe'], dodgeDelay=0.2, splicedDodgeAnims=[['duck', 1e-05, 0.8]], showMissedExtraTime=0.8)
-
-    def changeColor(parts):
-        track = Parallel()
-        for partNum in range(0, parts.getNumPaths()):
-            nextPart = parts.getPath(partNum)
-            track.append(Func(nextPart.setColorScale, Vec4(0, 0, 0, 1)))
-
-        return track
-
-    def resetColor(parts):
-        track = Parallel()
-        for partNum in range(0, parts.getNumPaths()):
-            nextPart = parts.getPath(partNum)
-            track.append(Func(nextPart.clearColorScale))
-
-        return track
-
     colorTracks = ()
     for t in targets:
         toon = t['toon']
         dmg = t['hp']
-        headParts = toon.getHeadParts()
-        torsoParts = toon.getTorsoParts()
-        legsParts = toon.getLegsParts()
         if dmg > 0:
-            colorTrack = Sequence()
-            colorTrack.append(Wait(1.6))
-            colorTrack.append(Func(battle.movie.needRestoreColor))
-            colorTrack.append(changeColor(headParts))
-            colorTrack.append(changeColor(torsoParts))
-            colorTrack.append(changeColor(legsParts))
-            colorTrack.append(Wait(2.9))
-            colorTrack.append(resetColor(headParts))
-            colorTrack.append(resetColor(torsoParts))
-            colorTrack.append(resetColor(legsParts))
-            colorTrack.append(Func(battle.movie.clearRestoreColor))
+            colorTrack = getColorTrack(battle, toon, 1.6, 2.9, Vec4(0, 0, 0, 1))
             colorTracks += (colorTrack,)
 
     soundTrack = getSoundTrack('SA_withdrawl.ogg', delay=1.4, node=suit)
@@ -4029,23 +3993,6 @@ def doFlex(attack):
 def doBurn(attack):
     battle = attack['battle']
     targets = attack['target']
-
-    def changeColor(parts):
-        track = Parallel()
-        for partNum in range(0, parts.getNumPaths()):
-            nextPart = parts.getPath(partNum)
-            track.append(Func(nextPart.setColorScale, Vec4(0, 0, 0, 1)))
-
-        return track
-
-    def resetColor(parts):
-        track = Parallel()
-        for partNum in range(0, parts.getNumPaths()):
-            nextPart = parts.getPath(partNum)
-            track.append(Func(nextPart.clearColorScale))
-
-        return track    
-    
     flameTracks = Parallel()
     
     for target in targets:
@@ -4076,20 +4023,7 @@ def doBurn(attack):
         flameTracks.append(flameTrack)
         flameTracks.append(flecksTrack)
         
-        headParts = toon.getHeadParts()
-        torsoParts = toon.getTorsoParts()
-        legsParts = toon.getLegsParts()
-        colorTrack = Sequence()
-        colorTrack.append(Wait(2.0))
-        colorTrack.append(Func(battle.movie.needRestoreColor))
-        colorTrack.append(changeColor(headParts))
-        colorTrack.append(changeColor(torsoParts))
-        colorTrack.append(changeColor(legsParts))
-        colorTrack.append(Wait(3.5))
-        colorTrack.append(resetColor(headParts))
-        colorTrack.append(resetColor(torsoParts))
-        colorTrack.append(resetColor(legsParts))
-        colorTrack.append(Func(battle.movie.clearRestoreColor))
+        colorTrack = getColorTrack(battle, toon, 2.0, 3.5, Vec4(0, 0, 0, 1))
         
         flameTracks.append(colorTrack)
 
