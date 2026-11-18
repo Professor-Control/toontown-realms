@@ -1860,7 +1860,6 @@ def doHalfWindsor(attack):
     suit = attack['suit']
     battle = attack['battle']
     targets = attack['target']
-    tie = globalPropPool.getProp('double-windsor' if attack['identifier'] == 'ttrealms:double_windsor' else 'half-windsor')
     suitType = getSuitBodyType(attack['suitName'])
     if suitType == 'c':
         throwDelay = 1.45
