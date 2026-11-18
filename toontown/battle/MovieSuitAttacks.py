@@ -212,6 +212,8 @@ def doSuitAttack(attack):
         suitTrack = doParadigmShift(attack)
     elif name in ('ttrealms:pecking_order', 'ttrealms:pecking_order_group'):
         suitTrack = doPeckingOrder(attack)
+    elif name == 'ttrealms:penny_pinch':
+        suitTrack = doDefault(attack)
     elif name == 'ttrealms:pick_pocket':
         suitTrack = doPickPocket(attack)
     elif name in ('ttrealms:pink_slip', 'ttrealms:pink_slip_group'):
@@ -252,9 +254,13 @@ def doSuitAttack(attack):
         suitTrack = doShake(attack)
     elif name == 'ttrealms:shred':
         suitTrack = doShred(attack)
+    elif name == 'ttrealms:sneak_attack':
+        suitTrack = doDefault(attack)
     elif name in ('ttrealms:snowball', 'ttrealms:snowball_group'):
         suitTrack = doSnowball(attack)
     elif name == 'ttrealms:song_and_dance':
+        suitTrack = doDefault(attack)
+    elif name == 'ttrealms:speed_dial':
         suitTrack = doDefault(attack)
     elif name == 'ttrealms:spin':
         suitTrack = doSpin(attack)
@@ -265,6 +271,8 @@ def doSuitAttack(attack):
     elif name in ('ttrealms:tee_off', 'ttrealms:tee_off_group'):
         suitTrack = doTeeOff(attack)
     elif name == 'ttrealms:throw_book':
+        suitTrack = doDefault(attack)
+    elif name == 'ttrealms:ticker_tape':
         suitTrack = doDefault(attack)
     elif name == 'ttrealms:tremor':
         suitTrack = doTremor(attack)
