@@ -2731,14 +2731,10 @@ def doBounceCheck(attack):
     targets = attack['target']
     checkPosPoints = [MovieUtil.PNT3_ZERO, VBase3(95.247, 79.025, 88.849)]
     suitType = getSuitBodyType(attack['suitName'])
-    if suitType == 'a':
+    if suitType in ('a', 'b'):
         throwDelay = 2.5
         dodgeDelay = 4.3
         damageDelay = 5.1
-    elif suitType == 'b':
-        throwDelay = 1.8
-        dodgeDelay = 3.6
-        damageDelay = 4.4
     elif suitType == 'c':
         throwDelay = 1.8
         dodgeDelay = 3.6
