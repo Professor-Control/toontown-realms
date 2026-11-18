@@ -2538,8 +2538,8 @@ def doRedTape(attack):
     battle = attack['battle']
     targets = attack['target']
     suitTrack = getSuitTrack(attack)
-    suitName = suit.getStyleName()
-    if suitName == 'tf' or suitName == 'nc':
+    suitType = getSuitBodyType(attack['suitName'])
+    if suitType == 'a':
         tapePosPoints = [Point3(-0.24, 0.09, -0.38), VBase3(-1.152, 86.581, -76.784)]
     else:
         tapePosPoints = [Point3(0.24, 0.09, -0.38), VBase3(-1.152, 86.581, -76.784)]
@@ -2916,8 +2916,8 @@ def doAudit(attack):
     partTrack3 = getPartTrack(particleEffect3, 2.3, 2.1, [particleEffect3, suit, 0])
     partTrack4 = getPartTrack(particleEffect4, 2.4, 2.2, [particleEffect4, suit, 0])
     partTrack5 = getPartTrack(particleEffect5, 2.5, 2.3, [particleEffect5, suit, 0])
-    suitName = attack['suitName']
-    if suitName == 'nc':
+    suitType = getSuitBodyType(attack['suitName'])
+    if suitType == 'a':
         calcPosPoints = [Point3(-0.15, 0.37, 0.03), VBase3(1.352, -6.518, -6.045)]
         calcDuration = 0.76
         scaleUpPoint = Point3(1.1, 1.85, 1.81)
@@ -2954,8 +2954,8 @@ def doCalculate(attack):
     partTrack3 = getPartTrack(particleEffect3, 2.3, 2.1, [particleEffect3, suit, 0])
     partTrack4 = getPartTrack(particleEffect4, 2.4, 2.2, [particleEffect4, suit, 0])
     partTrack5 = getPartTrack(particleEffect5, 2.5, 2.3, [particleEffect5, suit, 0])
-    suitName = attack['suitName']
-    if suitName == 'nc':
+    suitType = getSuitBodyType(attack['suitName'])
+    if suitType == 'a':
         calcPosPoints = [Point3(-0.15, 0.37, 0.03), VBase3(1.352, -6.518, -6.045)]
         calcDuration = 0.76
         scaleUpPoint = Point3(1.1, 1.85, 1.81)
@@ -2992,8 +2992,8 @@ def doTabulate(attack):
     partTrack3 = getPartTrack(particleEffect3, 2.3, 2.1, [particleEffect3, suit, 0])
     partTrack4 = getPartTrack(particleEffect4, 2.4, 2.2, [particleEffect4, suit, 0])
     partTrack5 = getPartTrack(particleEffect5, 2.5, 2.3, [particleEffect5, suit, 0])
-    suitName = attack['suitName']
-    if suitName == 'nc':
+    suitType = getSuitBodyType(attack['suitName'])
+    if suitType == 'a':
         calcPosPoints = [Point3(-0.15, 0.37, 0.03), VBase3(1.352, -6.518, -6.045)]
         calcDuration = 0.76
         scaleUpPoint = Point3(1.1, 1.85, 1.81)
