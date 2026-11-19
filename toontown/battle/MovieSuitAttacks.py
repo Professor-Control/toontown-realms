@@ -3129,9 +3129,9 @@ def doLiquidate(attack):
         toon = tgt['toon']
         if not toon.getTransformationsIndex(0):
             damageAnims = [['melt'], ['jump', 1.5, 0.4]]
-            toonTrack = getToonTrack(attack, damageDelay=damageDelay, splicedDamageAnims=damageAnims, dodgeDelay=dodgeDelay, dodgeAnimNames=['sidestep'])
+            toonTrack = getToonTrack(attack, damageDelay=damageDelay, splicedDamageAnims=damageAnims, dodgeDelay=dodgeDelay, dodgeAnimNames=['sidestep'], target=tgt)
         else:
-            toonTrack = getToonTrack(attack, 3.5, ['suitQuicksandAnim'], 2.45, ['sidestep'])
+            toonTrack = getToonTrack(attack, 3.5, ['suitQuicksandAnim'], 2.45, ['sidestep'], target=tgt)
         toonTracks.append(toonTrack)
 
     soundTrack = getSoundTrack('SA_liquidate.ogg', delay=2.0, node=suit)
