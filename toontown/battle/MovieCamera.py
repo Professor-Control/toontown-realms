@@ -419,7 +419,7 @@ def chooseSuitShot(attack, attackDuration):
         camTrack.append(randomActorShot(suit, battle, attackDuration, 'suit'))
     elif name == 'ttrealms:heated_discussion':
         camTrack.append(avatarHeatedDiscussionShot(suit, battle))
-    elif name == 'ttrealms:audit':
+    elif name in ('ttrealms:audit', 'ttrealms:calculate', 'ttrealms:tabulate'):
         camTrack.append(defaultCamera())
     elif name in ('ttrealms:bite', 'ttrealms:bite_group'):
         camTrack.append(defaultCamera(openShotDuration=2.8))
@@ -429,8 +429,6 @@ def chooseSuitShot(attack, attackDuration):
         camTrack.append(defaultCamera(openShotDuration=2.4))
     elif name == 'ttrealms:buzz_word':
         camTrack.append(defaultCamera(openShotDuration=4.7))
-    elif name == 'ttrealms:calculate':
-        camTrack.append(defaultCamera())
     elif name == 'ttrealms:canned':
         camTrack.append(defaultCamera(openShotDuration=2.9))
     elif name in ('ttrealms:chomp', 'ttrealms:chomp_group'):
@@ -534,8 +532,6 @@ def chooseSuitShot(attack, attackDuration):
         camTrack.append(defaultCamera(openShotDuration=1.7))
     elif name == 'ttrealms:synergy' or name == 'ttrealms:blizzard':
         camTrack.append(defaultCamera(openShotDuration=1.7))
-    elif name == 'ttrealms:tabulate':
-        camTrack.append(defaultCamera())
     elif name in ('ttrealms:tee_off', 'ttrealms:tee_off_group'):
         camTrack.append(defaultCamera(openShotDuration=4.5))
     elif name == 'ttrealms:tremor':
