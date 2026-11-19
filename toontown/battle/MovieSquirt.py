@@ -946,8 +946,7 @@ def __doStormCloud(squirt, delay, fShowStun, npcs):
 
     battle = squirt['battle']
     origHpr = toon.getHpr(battle)
-    suit = squirt['target'][0]['suit']
-    suitPos = suit.getPos(battle)
+    suitPos = MovieUtil.calcAvgSuitPos(squirt)
 
     toonTrack = Sequence( 
         Func(toon.headsUp, battle, suitPos),
@@ -1082,8 +1081,7 @@ def __doGeyser(squirt, delay, fShowStun, npcs, uberClone = 0):
 
     battle = squirt['battle']
     origHpr = toon.getHpr(battle)
-    suit = squirt['target'][0]['suit']
-    suitPos = suit.getPos(battle)
+    suitPos = MovieUtil.calcAvgSuitPos(squirt)
 
     if toon.getTransformationsIndex(0):
         animTrack = MovieUtil.getSuitButtonAnimTrack(toon.suit)
