@@ -55,7 +55,7 @@ def doSquirts(squirts):
         skip = 0
         if skip:
             pass
-        elif type(squirt['target']) == type([]):
+        else:
             if 1:
                 target = squirt['target'][0]
                 suitId = target['suit'].doId
@@ -63,12 +63,6 @@ def doSquirts(squirts):
                     suitSquirtsDict[suitId].append(squirt)
                 else:
                     suitSquirtsDict[suitId] = [squirt]
-        else:
-            suitId = squirt['target']['suit'].doId
-            if suitId in suitSquirtsDict:
-                suitSquirtsDict[suitId].append(squirt)
-            else:
-                suitSquirtsDict[suitId] = [squirt]
 
     suitSquirts = list(suitSquirtsDict.values())
 
@@ -102,17 +96,12 @@ def __doSuitSquirts(squirts, npcs):
     uberClone = 0
     toonTracks = Parallel()
     delay = 0.0
-    if type(squirts[0]['target']) == type([]):
-        for target in squirts[0]['target']:
-            if len(squirts) == 1 and target['hp'] > 0:
-                fShowStun = 1
-            else:
-                fShowStun = 0
+    for target in squirts[0]['target']:
+        if len(squirts) == 1 and target['hp'] > 0:
+            fShowStun = 1
+        else:
+            fShowStun = 0
 
-    elif len(squirts) == 1 and squirts[0]['target']['hp'] > 0:
-        fShowStun = 1
-    else:
-        fShowStun = 0
     for s in squirts:
         tracks = __doSquirt(s, delay, fShowStun, npcs, uberClone)
         if s['level'] >= ToontownBattleGlobals.UBER_GAG_LEVEL_INDEX:
@@ -131,18 +120,12 @@ def __doSquirt(squirt, delay, fShowStun, npcs, uberClone = 0):
     if 'npc' in squirt:
         toon = squirt['npc']
     squirtSequence = Sequence(Wait(delay))
-    if type(squirt['target']) == type([]):
-        for target in squirt['target']:
-            notify.debug('toon: %s squirts prop: %d at suit: %d for hp: %d' % (toon.getName(),
-             squirt['level'],
-             target['suit'].doId,
-             target['hp']))
-
-    else:
+    for target in squirt['target']:
         notify.debug('toon: %s squirts prop: %d at suit: %d for hp: %d' % (toon.getName(),
          squirt['level'],
-         squirt['target']['suit'].doId,
-         squirt['target']['hp']))
+         target['suit'].doId,
+         target['hp']))
+
     if uberClone:
         ival = squirtfn_array[squirt['level']](squirt, delay, fShowStun, npcs, uberClone)
         if ival:
@@ -281,17 +264,17 @@ def doFlower(squirt, delay, fShowStun, npcs=None):
     level = squirt['level']
     hpbonus = squirt['hpbonus']
     target = squirt['target']
-    suit = target['suit']
+    suit = target[0]['suit']
     if not hasattr(suit, 'updateHealthBar'):
-        suitGeom = target['suitGeom']
+        suitGeom = target[0]['suitGeom']
     else:
         suitGeom = suit
-    hp = target['hp']
-    kbbonus = target['kbbonus']
-    died = target['died']
-    revived = target['revived']
-    leftSuits = target['leftSuits']
-    rightSuits = target['rightSuits']
+    hp = target[0]['hp']
+    kbbonus = target[0]['kbbonus']
+    died = target[0]['died']
+    revived = target[0]['revived']
+    leftSuits = target[0]['leftSuits']
+    rightSuits = target[0]['rightSuits']
     battle = squirt['battle']
 
     button = globalPropPool.getProp('button')
@@ -388,13 +371,13 @@ def __doWaterGlass(squirt, delay, fShowStun, npcs):
     level = squirt['level']
     hpbonus = squirt['hpbonus']
     target = squirt['target']
-    suit = target['suit']
-    hp = target['hp']
-    kbbonus = target['kbbonus']
-    died = target['died']
-    revived = target['revived']
-    leftSuits = target['leftSuits']
-    rightSuits = target['rightSuits']
+    suit = target[0]['suit']
+    hp = target[0]['hp']
+    kbbonus = target[0]['kbbonus']
+    died = target[0]['died']
+    revived = target[0]['revived']
+    leftSuits = target[0]['leftSuits']
+    rightSuits = target[0]['rightSuits']
     battle = squirt['battle']
 
     hitSuit = hp > 0
@@ -545,13 +528,13 @@ def __doWaterGun(squirt, delay, fShowStun, npcs):
     level = squirt['level']
     hpbonus = squirt['hpbonus']
     target = squirt['target']
-    suit = target['suit']
-    hp = target['hp']
-    kbbonus = target['kbbonus']
-    died = target['died']
-    revived = target['revived']
-    leftSuits = target['leftSuits']
-    rightSuits = target['rightSuits']
+    suit = target[0]['suit']
+    hp = target[0]['hp']
+    kbbonus = target[0]['kbbonus']
+    died = target[0]['died']
+    revived = target[0]['revived']
+    leftSuits = target[0]['leftSuits']
+    rightSuits = target[0]['rightSuits']
     battle = squirt['battle']
 
     suitPos = suit.getPos(battle)
@@ -653,13 +636,13 @@ def __doSeltzerBottle(squirt, delay, fShowStun, npcs):
     level = squirt['level']
     hpbonus = squirt['hpbonus']
     target = squirt['target']
-    suit = target['suit']
-    hp = target['hp']
-    kbbonus = target['kbbonus']
-    died = target['died']
-    revived = target['revived']
-    leftSuits = target['leftSuits']
-    rightSuits = target['rightSuits']
+    suit = target[0]['suit']
+    hp = target[0]['hp']
+    kbbonus = target[0]['kbbonus']
+    died = target[0]['died']
+    revived = target[0]['revived']
+    leftSuits = target[0]['leftSuits']
+    rightSuits = target[0]['rightSuits']
     battle = squirt['battle']
 
     suitPos = suit.getPos(battle)
@@ -770,13 +753,13 @@ def __doFireHose(squirt, delay, fShowStun, npcs):
     level = squirt['level']
     hpbonus = squirt['hpbonus']
     target = squirt['target']
-    suit = target['suit']
-    hp = target['hp']
-    kbbonus = target['kbbonus']
-    died = target['died']
-    revived = target['revived']
-    leftSuits = target['leftSuits']
-    rightSuits = target['rightSuits']
+    suit = target[0]['suit']
+    hp = target[0]['hp']
+    kbbonus = target[0]['kbbonus']
+    died = target[0]['died']
+    revived = target[0]['revived']
+    leftSuits = target[0]['leftSuits']
+    rightSuits = target[0]['rightSuits']
     battle = squirt['battle']
 
     suitPos = suit.getPos(battle)
@@ -941,13 +924,13 @@ def __doStormCloud(squirt, delay, fShowStun, npcs):
     level = squirt['level']
     hpbonus = squirt['hpbonus']
     target = squirt['target']
-    suit = target['suit']
-    hp = target['hp']
-    kbbonus = target['kbbonus']
-    died = target['died']
-    revived = target['revived']
-    leftSuits = target['leftSuits']
-    rightSuits = target['rightSuits']
+    suit = squirt['target'][0]['suit']
+    hp = target[0]['hp']
+    kbbonus = target[0]['kbbonus']
+    died = target[0]['died']
+    revived = target[0]['revived']
+    leftSuits = target[0]['leftSuits']
+    rightSuits = target[0]['rightSuits']
     battle = squirt['battle']
 
     suitPos = suit.getPos(battle)

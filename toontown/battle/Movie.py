@@ -721,7 +721,7 @@ class Movie(DirectObject.DirectObject):
                             sdict['kbbonus'] = kbbonuses[targetIndex]
                             sdict['died'] = atk[ATK_TGT_DIED_COL] & 1 << targetIndex
                             sdict['revived'] = atk[ATK_TGT_REVIVE_COL] & 1 << targetIndex
-                            if track in (DROP, TRAP):
+                            if track in (DROP, SQUIRT, TRAP):
                                 adict['target'] = [sdict]
                             else:
                                 adict['target'] = sdict
