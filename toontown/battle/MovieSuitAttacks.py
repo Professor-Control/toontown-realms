@@ -1,3 +1,4 @@
+from typing import List
 from panda3d.toontown import *
 from toontown.toonbase.ToontownGlobals import *
 from direct.interval.IntervalGlobal import *
@@ -432,6 +433,14 @@ def getPartTrack(particleEffect, startDelay, durationDelay, partExtraArgs):
     else:
         worldRelative = 1
     return Sequence(Wait(startDelay), ParticleInterval(particleEffect, parent, worldRelative, duration=durationDelay, cleanup=True))
+
+
+def hitAtleastOneToon(targets: List[dict]) -> bool:
+    for t in targets:
+        if t['hp'] > 0:
+            return True
+
+    return False
 
 
 def getToonTrack(attack, damageDelay = 1e-06, damageAnimNames = None, dodgeDelay = 0.0001, dodgeAnimNames = None, splicedDamageAnims = None, splicedDodgeAnims = None, target = None, showDamageExtraTime = 0.01, showMissedExtraTime = 0.5, flexOnEx = 0, prop = None):
@@ -1298,11 +1307,6 @@ def doSynergy(attack):
     battle = attack['battle']
     targets = attack['target']
     damageDelay = 1.7
-    hitAtleastOneToon = 0
-    for t in targets:
-        if t['hp'] > 0:
-            hitAtleastOneToon = 1
-
     particleEffect = BattleParticles.createParticleEffect('Synergy')
     waterfallEffect = BattleParticles.createParticleEffect(file='synergyWaterfall')
     suitTrack = getSuitAnimTrack(attack)
@@ -1318,7 +1322,7 @@ def doSynergy(attack):
     dodgeAnims.append(['jump', 0, 0.91])
     toonTracks = getToonTracks(attack, damageDelay=damageDelay, damageAnimNames=['slip-forward'], dodgeDelay=0.91, splicedDodgeAnims=dodgeAnims, showMissedExtraTime=1.0)
     synergySoundTrack = Sequence(Wait(0.9), SoundInterval(globalBattleSoundCache.getSound('SA_synergy.ogg'), node=suit))
-    if hitAtleastOneToon > 0:
+    if hitAtleastOneToon(targets):
         fallingSoundTrack = Sequence(Wait(damageDelay + 0.5), SoundInterval(globalBattleSoundCache.getSound('Toon_bodyfall_synergy.ogg'), node=suit))
         return Parallel(suitTrack, partTrack, waterfallTrack, synergySoundTrack, fallingSoundTrack, toonTracks)
     else:
@@ -2167,11 +2171,6 @@ def doPlayHardball(attack):
         damageDelay = 2.76
         dodgeDelay = 1.86
         soundDelay = 2.4
-    hitAtleastOneToon = False
-    for t in targets:
-        if t['hp'] > 0:
-            hitAtleastOneToon = True
-
     suitTrack = getSuitTrack(attack)
     propTracks = ()
     for t in targets:
@@ -2216,7 +2215,7 @@ def doPlayHardball(attack):
       0.01,
       0.5], ['slip-backward', 0.01, 0.7]]
     toonTracks = getToonTracks(attack, splicedDamageAnims=damageAnims, dodgeDelay=dodgeDelay, dodgeAnimNames=['sidestep'], showDamageExtraTime=3.9)
-    soundTrack = getSoundTrack('SA_hardball_impact_only.ogg', delay=soundDelay - 0.3, node=suit) if hitAtleastOneToon else getSoundTrack('SA_hardball.ogg', delay=soundDelay, node=suit)
+    soundTrack = getSoundTrack('SA_hardball_impact_only.ogg', delay=soundDelay - 0.3, node=suit) if hitAtleastOneToon(targets) else getSoundTrack('SA_hardball.ogg', delay=soundDelay, node=suit)
     return Parallel(suitTrack, toonTracks, *propTracks, soundTrack)
 
 
@@ -2237,11 +2236,6 @@ def doPowerTie(attack):
         throwDelay = 1.45
         damageDelay = 2.61
         dodgeDelay = 2.34
-    hitAtleastOneToon = False
-    for t in targets:
-        if t['hp'] > 0:
-            hitAtleastOneToon = True
-
     suitTrack = getSuitTrack(attack)
     tiePropTracks = ()
     for t in targets:
@@ -2257,7 +2251,7 @@ def doPowerTie(attack):
 
     toonTracks = getToonTracks(attack, damageDelay, ['conked'], dodgeDelay, ['sidestep'])
     throwSound = getSoundTrack('SA_powertie_throw.ogg', delay=throwDelay + 0.85, node=suit)
-    if hitAtleastOneToon:
+    if hitAtleastOneToon(targets):
         hitSound = getSoundTrack('SA_powertie_impact.ogg', delay=throwDelay + 1.45, node=suit)
         return Parallel(suitTrack, toonTracks, tiePropTracks, throwSound, hitSound)
     else:
@@ -2613,11 +2607,6 @@ def doParadigmShift(attack):
     suit = attack['suit']
     battle = attack['battle']
     targets = attack['target']
-    hitAtleastOneToon = 0
-    for t in targets:
-        if t['hp'] > 0:
-            hitAtleastOneToon = 1
-
     damageDelay = 1.95
     dodgeDelay = 0.95
     sprayEffect = BattleParticles.createParticleEffect('ShiftSpray')
@@ -2683,7 +2672,7 @@ def doParadigmShift(attack):
     dodgeAnims.extend(getSplicedLerpAnims('jump', 0.31, 1.0, startTime=0.6))
     dodgeAnims.append(['jump', 0, 0.91])
     toonTracks = getToonTracks(attack, damageDelay=damageDelay, splicedDamageAnims=damageAnims, dodgeDelay=dodgeDelay, splicedDodgeAnims=dodgeAnims, showDamageExtraTime=2.7)
-    if hitAtleastOneToon == 1:
+    if hitAtleastOneToon(targets):
         soundTrack = getSoundTrack('SA_paradigm_shift.ogg', delay=2.1, node=suit)
         return Parallel(suitTrack, sprayTrack, soundTrack, liftTracks, toonTracks, toonRiseTracks)
     else:
@@ -3972,13 +3961,11 @@ def doFlex(attack):
     suit = attack['suit']
     suitTrack = getSuitAnimTrack(attack)
     targets = attack['target']
-    hitAtleastOneToon = 0
-    missedOneToon = 0
+    missedOneToon = False
     for t in targets:
-        if t['hp'] > 0:
-            hitAtleastOneToon = 1
-        else:
-            missedOneToon = 1
+        if t['hp'] <= 0:
+            missedOneToon = True
+
     damageAnims = [['cringe']]
     dodgeAnims = [['shrug']]
     suitsfx = globalBattleSoundCache.getSound('SA_watercooler_appear_only.ogg')
@@ -3987,8 +3974,8 @@ def doFlex(attack):
     toonsfx = base.loader.loadSfx('phase_3.5/audio/sfx/avatar_emotion_shrug.ogg')
     missSound = Sequence(Wait(1.1), SoundInterval(toonsfx, node=suit))
     hitSound = getSoundTrack('SA_powertie_impact.ogg', delay=1.8, node=suit)
-    if hitAtleastOneToon == 1:
-        if missedOneToon == 1:
+    if hitAtleastOneToon(targets):
+        if missedOneToon:
             return Parallel(suitTrack, toonTracks, throwSound, hitSound, missSound)
         else:
             return Parallel(suitTrack, toonTracks, throwSound, hitSound)
@@ -4100,11 +4087,6 @@ def doSnowball(attack):
         damageDelay = 2.76
         dodgeDelay = 1.86
         soundDelay = 2.4
-    hitAtleastOneToon = False
-    for t in targets:
-        if t['hp'] > 0:
-            hitAtleastOneToon = True
-
     suitTrack = getSuitTrack(attack)
     propTracks = ()
     for t in targets:
@@ -4146,7 +4128,7 @@ def doSnowball(attack):
       0.01,
       0.5], ['slip-backward', 0.01, 0.7]]
     toonTracks = getToonTracks(attack, splicedDamageAnims=damageAnims, dodgeDelay=dodgeDelay, dodgeAnimNames=['sidestep'], showDamageExtraTime=3.9)
-    soundTrack = getSoundTrack('SA_hardball_impact_only.ogg', delay=soundDelay - 0.3, node=suit) if hitAtleastOneToon else getSoundTrack('SA_hardball.ogg', delay=soundDelay, node=suit)
+    soundTrack = getSoundTrack('SA_hardball_impact_only.ogg', delay=soundDelay - 0.3, node=suit) if hitAtleastOneToon(targets) else getSoundTrack('SA_hardball.ogg', delay=soundDelay, node=suit)
     return Parallel(suitTrack, toonTracks, *propTracks, soundTrack)
 
 
@@ -4155,11 +4137,6 @@ def doBlizzard(attack):
     battle = attack['battle']
     targets = attack['target']
     damageDelay = 1.7
-    hitAtleastOneToon = 0
-    for t in targets:
-        if t['hp'] > 0:
-            hitAtleastOneToon = 1
-
     particleEffect = BattleParticles.createParticleEffect('Blizzard')
     waterfallEffect = BattleParticles.createParticleEffect(file='blizzardWaterfall')
     suitTrack = getSuitAnimTrack(attack)
@@ -4175,7 +4152,7 @@ def doBlizzard(attack):
     dodgeAnims.append(['jump', 0, 0.91])
     toonTracks = getToonTracks(attack, damageDelay=damageDelay, damageAnimNames=['slip-forward'], dodgeDelay=0.91, splicedDodgeAnims=dodgeAnims, showMissedExtraTime=1.0)
     synergySoundTrack = Sequence(Wait(0.9), SoundInterval(globalBattleSoundCache.getSound('SA_synergy.ogg'), node=suit))
-    if hitAtleastOneToon > 0:
+    if hitAtleastOneToon(targets):
         fallingSoundTrack = Sequence(Wait(damageDelay + 0.5), SoundInterval(globalBattleSoundCache.getSound('Toon_bodyfall_synergy.ogg'), node=suit))
         return Parallel(suitTrack, partTrack, waterfallTrack, synergySoundTrack, fallingSoundTrack, toonTracks)
     else:
