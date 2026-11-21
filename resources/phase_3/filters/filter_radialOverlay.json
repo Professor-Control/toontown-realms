@@ -1,0 +1,8 @@
+{
+	"display_name" : "Blur",
+	"identifier" : "ttrealms:radialOverlay",
+	"mw_identifiers" : ["blur", "rad"],
+	"fragment" : "phase_3/shaders/ttoff_sha_post_radialOverlay.frag",
+	"vertex" : "phase_3/shaders/ttoff_sha_post_generic.vert",
+	"type" : "postprocess"
+}

@@ -4,6 +4,8 @@ from panda3d.core import WindowProperties, MouseButton
 
 from toontown.toonbase import ClientSettings
 
+import sys
+
 
 class CameraBase(FSM):
 

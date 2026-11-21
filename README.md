@@ -17,7 +17,7 @@ Pull Requests that improve, update, finish, or fix any aspect of the game are we
 ================
 
 Toontown Realms uses a unique version of Panda3D. 
-This will also be open sourced soon. Currently this build is not playable.
+https://github.com/ttoff/panda3d
 
 **Credits**
 ================

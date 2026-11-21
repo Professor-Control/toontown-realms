@@ -32,6 +32,8 @@ bot.json
 errorCode
 props/
 filters/
+!/resources/*/filters/
+!/resources/**/**/props/
 cache/
 logs/moderation
 accounts.json

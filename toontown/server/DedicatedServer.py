@@ -116,12 +116,7 @@ class DedicatedServer:
 
         # Setup initial UberDOG arguments.
         if __debug__:
-            if sys.platform == 'win32':
-                    uberDogArguments = '%s -m toontown.uberdog.UDStart' % open('PPYTHON_PATH').read().strip('\n')
-            elif sys.platform == 'linux':
-                uberDogArguments = 'python3.8 -m toontown.uberdog.UDStart'
-            else:
-                uberDogArguments = 'ppython -m toontown.uberdog.UDStart'
+            uberDogArguments = f'{sys.executable} -m toontown.uberdog.UDStart'
         else:
             if sys.platform == 'win32':
                 uberDogArguments = 'offline.exe --uberdog'
@@ -176,12 +171,7 @@ class DedicatedServer:
 
         # Setup initial AI arguments.
         if __debug__:
-            if sys.platform == 'win32':
-                aiArguments = '%s -m toontown.ai.AIStart' % open('PPYTHON_PATH').read().strip('\n')
-            elif sys.platform == 'linux':
-                aiArguments = 'python3.8 -m toontown.ai.AIStart'
-            else:
-                aiArguments = 'ppython -m toontown.ai.AIStart'
+            aiArguments = f'{sys.executable} -m toontown.ai.AIStart'
         else:
             if sys.platform == 'win32':
                 aiArguments = 'offline.exe --ai'

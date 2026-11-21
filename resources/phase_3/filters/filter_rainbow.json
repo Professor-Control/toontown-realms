@@ -1,0 +1,8 @@
+{
+	"display_name" : "Rainbow",
+	"identifier" : "ttrealms:rainbow",
+	"mw_identifiers" : ["rainbow"],
+	"fragment" : "phase_3/shaders/ttoff_sha_render_rainbow.frag",
+	"vertex" : "phase_3/shaders/ttoff_sha_render_rainbow.vert",
+	"type" : "render"
+}

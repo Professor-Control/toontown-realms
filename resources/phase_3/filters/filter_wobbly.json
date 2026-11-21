@@ -1,0 +1,8 @@
+{
+	"display_name" : "Wobbly",
+	"identifier" : "ttrealms:wobbly",
+	"mw_identifiers" : ["wobbly"],
+	"fragment" : "phase_3/shaders/ttrm_sha_render_wobbly.frag",
+	"vertex" : "phase_3/shaders/ttrm_sha_render_wobbly.vert",
+	"type" : "render"
+}

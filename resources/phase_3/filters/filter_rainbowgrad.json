@@ -1,0 +1,8 @@
+{
+	"display_name" : "Rainbow Gradient",
+	"identifier" : "ttrealms:rainbowgrad",
+	"mw_identifiers" : ["rainbowgrad", "rainbowgradient"],
+	"fragment" : "phase_3/shaders/ttoff_sha_render_rainbowgrad.frag",
+	"vertex" : "phase_3/shaders/ttoff_sha_render_rainbowgrad.vert",
+	"type" : "render"
+}

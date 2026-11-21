@@ -1,0 +1,8 @@
+{
+	"display_name" : "Desaturate",
+	"identifier" : "ttrealms:desaturate",
+	"mw_identifiers" : ["bandw", "blackandwhite", "desaturate", "greyscale", "grayscale", "old"],
+	"fragment" : "phase_3/shaders/ttoff_sha_render_bandw.frag",
+	"vertex" : "phase_3/shaders/ttoff_sha_render_bandw.vert",
+	"type" : "render"
+}

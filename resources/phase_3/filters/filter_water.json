@@ -1,0 +1,8 @@
+{
+	"display_name" : "Underwater",
+	"identifier" : "ttrealms:underwater",
+	"mw_identifiers" : ["water", "wave", "underwater"],
+	"fragment" : "phase_3/shaders/ttoff_sha_post_water.frag",
+	"vertex" : "phase_3/shaders/ttoff_sha_post_generic.vert",
+	"type" : "postprocess"
+}
