@@ -1,4 +1,4 @@
-from typing import List
+from typing import Tuple, List
 from panda3d.toontown import *
 from toontown.toonbase.ToontownGlobals import *
 from direct.interval.IntervalGlobal import *
@@ -125,7 +125,7 @@ def doSuitAttack(attack):
     # disgusting
     if name == 'ttrealms:active_state' or name == 'ttrealms:stomp':
         suitTrack = doStomp(attack)
-    elif name == 'ttrealms:audit':
+    elif name in ('ttrealms:audit', 'ttrealms:calculate', 'ttrealms:tabulate'):
         suitTrack = doAudit(attack)
     elif name in ('ttrealms:bite', 'ttrealms:bite_group'):
         suitTrack = doBite(attack)
@@ -137,8 +137,6 @@ def doSuitAttack(attack):
         suitTrack = doBrainStorm(attack)
     elif name == 'ttrealms:buzz_word':
         suitTrack = doBuzzWord(attack)
-    elif name == 'ttrealms:calculate':
-        suitTrack = doCalculate(attack)
     elif name == 'ttrealms:canned':
         suitTrack = doCanned(attack)
     elif name in ('ttrealms:chomp', 'ttrealms:chomp_group'):
@@ -267,8 +265,6 @@ def doSuitAttack(attack):
         suitTrack = doSpin(attack)
     elif name == 'ttrealms:synergy':
         suitTrack = doSynergy(attack)
-    elif name == 'ttrealms:tabulate':
-        suitTrack = doTabulate(attack)
     elif name in ('ttrealms:tee_off', 'ttrealms:tee_off_group'):
         suitTrack = doTeeOff(attack)
     elif name == 'ttrealms:throw_book':
@@ -1371,6 +1367,9 @@ def doBrainStorm(attack):
     battle = attack['battle']
     targets = attack['target']
     BattleParticles.loadParticles()
+    textureNames: Tuple[str, ...] = ('brainstorm-box',
+     'brainstorm-env',
+     'brainstorm-track')
     suitType = getSuitBodyType(attack['suitName'])
     if suitType == 'a':
         partDelay = 1.2
@@ -1392,9 +1391,9 @@ def doBrainStorm(attack):
         snowEffect2 = BattleParticles.createParticleEffect('BrainStorm')
         snowEffect3 = BattleParticles.createParticleEffect('BrainStorm')
         effectColor = Vec4(0.65, 0.79, 0.93, 0.85)
-        BattleParticles.setEffectTexture(snowEffect, 'brainstorm-box', color=effectColor)
-        BattleParticles.setEffectTexture(snowEffect2, 'brainstorm-env', color=effectColor)
-        BattleParticles.setEffectTexture(snowEffect3, 'brainstorm-track', color=effectColor)
+        BattleParticles.setEffectTexture(snowEffect, textureNames, color=effectColor)
+        BattleParticles.setEffectTexture(snowEffect2, textureNames, color=effectColor)
+        BattleParticles.setEffectTexture(snowEffect3, textureNames, color=effectColor)
         cloud = globalPropPool.getProp('stormcloud')
         initialCloudHeight = suit.height + 3
         cloudPosPoints = [Point3(0, 3, initialCloudHeight), VBase3(180, 0, 0)]
@@ -1431,17 +1430,14 @@ def doBuzzWord(attack):
     battle = attack['battle']
     BattleParticles.loadParticles()
     particleEffects = []
-    texturesList = ['buzzwords-crash',
+    textureNames: Tuple[str, ...] = ('buzzwords-crash',
      'buzzwords-inc',
      'buzzwords-main',
      'buzzwords-over',
-     'buzzwords-syn']
+     'buzzwords-syn')
     for i in range(0, 5):
         effect = BattleParticles.createParticleEffect('BuzzWord')
-        if random.random() > 0.5:
-            BattleParticles.setEffectTexture(effect, texturesList[i], color=Vec4(1, 0.94, 0.02, 1))
-        else:
-            BattleParticles.setEffectTexture(effect, texturesList[i], color=Vec4(0, 0, 0, 1))
+        BattleParticles.setEffectTexture(effect, textureNames, color=Vec4(1, 0.94, 0.02, 1) if random.random() > 0.5 else Vec4(0, 0, 0, 1))
         particleEffects.append(effect)
 
     suitType = getSuitBodyType(attack['suitName'])
@@ -2262,10 +2258,11 @@ def doDoubleTalk(attack):
     suit = attack['suit']
     battle = attack['battle']
     BattleParticles.loadParticles()
+    textureNames: Tuple[str, ...] = ('doubletalk-double', 'doubletalk-good')
     particleEffect = BattleParticles.createParticleEffect('DoubleTalkLeft')
     particleEffect2 = BattleParticles.createParticleEffect('DoubleTalkRight')
-    BattleParticles.setEffectTexture(particleEffect, 'doubletalk-double', color=Vec4(0, 1.0, 0.0, 1))
-    BattleParticles.setEffectTexture(particleEffect2, 'doubletalk-good', color=Vec4(0, 1.0, 0.0, 1))
+    BattleParticles.setEffectTexture(particleEffect, textureNames, color=Vec4(0, 1.0, 0.0, 1))
+    BattleParticles.setEffectTexture(particleEffect2, textureNames, color=Vec4(0, 1.0, 0.0, 1))
     suitType = getSuitBodyType(attack['suitName'])
     if suitType == 'a':
         partDelay = 3.3
@@ -2414,15 +2411,19 @@ def doFilibuster(attack):
     dmg = target[0]['hp']
     battle = attack['battle']
     BattleParticles.loadParticles()
+    textureNames: Tuple[str, ...] = ('filibuster-cut',
+     'filibuster-fiscal',
+     'filibuster-impeach',
+     'filibuster-inc')
     sprayEffect = BattleParticles.createParticleEffect(file='filibusterSpray')
     sprayEffect2 = BattleParticles.createParticleEffect(file='filibusterSpray')
     sprayEffect3 = BattleParticles.createParticleEffect(file='filibusterSpray')
     sprayEffect4 = BattleParticles.createParticleEffect(file='filibusterSpray')
     color = Vec4(0.4, 0, 0, 1)
-    BattleParticles.setEffectTexture(sprayEffect, 'filibuster-cut', color=color)
-    BattleParticles.setEffectTexture(sprayEffect2, 'filibuster-fiscal', color=color)
-    BattleParticles.setEffectTexture(sprayEffect3, 'filibuster-impeach', color=color)
-    BattleParticles.setEffectTexture(sprayEffect4, 'filibuster-inc', color=color)
+    BattleParticles.setEffectTexture(sprayEffect, textureNames, color=color)
+    BattleParticles.setEffectTexture(sprayEffect2, textureNames, color=color)
+    BattleParticles.setEffectTexture(sprayEffect3, textureNames, color=color)
+    BattleParticles.setEffectTexture(sprayEffect4, textureNames, color=color)
     partDelay = 1.3
     partDuration = 1.15
     damageDelay = 2.45
@@ -2454,15 +2455,17 @@ def doSchmooze(attack):
     BattleParticles.loadParticles()
     upperEffects = []
     lowerEffects = []
-    textureNames = ['schmooze-genius',
+    textureNames: Tuple[str, ...] = ('schmooze-genius',
      'schmooze-instant',
      'schmooze-master',
-     'schmooze-viz']
+     'schmooze-viz')
     for i in range(0, 4):
         upperEffect = BattleParticles.createParticleEffect(file='schmoozeUpperSpray')
         lowerEffect = BattleParticles.createParticleEffect(file='schmoozeLowerSpray')
-        BattleParticles.setEffectTexture(upperEffect, textureNames[i], color=Vec4(0, 0, 1, 1))
-        BattleParticles.setEffectTexture(lowerEffect, textureNames[i], color=Vec4(0, 0, 1, 1))
+        # Two particle effects simulate what looks like one particle effect, so be sure the textures, while being random, appear consistent.
+        name = random.choice(textureNames)
+        BattleParticles.setEffectTexture(upperEffect, name, color=Vec4(0, 0, 1, 1))
+        BattleParticles.setEffectTexture(lowerEffect, name, color=Vec4(0, 0, 1, 1))
         upperEffects.append(upperEffect)
         lowerEffects.append(lowerEffect)
 
@@ -2887,16 +2890,26 @@ def doAudit(attack):
     toon = target[0]['toon']
     calculator = globalPropPool.getProp('calculator')
     BattleParticles.loadParticles()
+    textureNames: Tuple[str, ...] = ('audit-div',
+     'audit-five',
+     'audit-four',
+     'audit-minus',
+     'audit-mult',
+     'audit-one',
+     'audit-plus',
+     'audit-six',
+     'audit-three',
+     'audit-two')
     particleEffect = BattleParticles.createParticleEffect('Calculate')
-    BattleParticles.setEffectTexture(particleEffect, 'audit-one', color=Vec4(0, 0, 0, 1))
+    BattleParticles.setEffectTexture(particleEffect, textureNames, color=Vec4(0, 0, 0, 1))
     particleEffect2 = BattleParticles.createParticleEffect('Calculate')
-    BattleParticles.setEffectTexture(particleEffect2, 'audit-two', color=Vec4(0, 0, 0, 1))
+    BattleParticles.setEffectTexture(particleEffect2, textureNames, color=Vec4(0, 0, 0, 1))
     particleEffect3 = BattleParticles.createParticleEffect('Calculate')
-    BattleParticles.setEffectTexture(particleEffect3, 'audit-three', color=Vec4(0, 0, 0, 1))
+    BattleParticles.setEffectTexture(particleEffect3, textureNames, color=Vec4(0, 0, 0, 1))
     particleEffect4 = BattleParticles.createParticleEffect('Calculate')
-    BattleParticles.setEffectTexture(particleEffect4, 'audit-four', color=Vec4(0, 0, 0, 1))
+    BattleParticles.setEffectTexture(particleEffect4, textureNames, color=Vec4(0, 0, 0, 1))
     particleEffect5 = BattleParticles.createParticleEffect('Calculate')
-    BattleParticles.setEffectTexture(particleEffect5, 'audit-mult', color=Vec4(0, 0, 0, 1))
+    BattleParticles.setEffectTexture(particleEffect5, textureNames, color=Vec4(0, 0, 0, 1))
     suitTrack = getSuitTrack(attack)
     partTrack = getPartTrack(particleEffect, 2.1, 1.9, [particleEffect, suit, 0])
     partTrack2 = getPartTrack(particleEffect2, 2.2, 2.0, [particleEffect2, suit, 0])
@@ -2913,83 +2926,17 @@ def doAudit(attack):
         calcDuration = 1.87
         scaleUpPoint = Point3(1.0, 1.37, 1.31)
     calcPropTrack = getPropTrack(calculator, suit.getLeftHand(), calcPosPoints, 1e-06, calcDuration, scaleUpPoint=scaleUpPoint, anim=1, propName='calculator', animStartTime=0.5, animDuration=3.4)
-    toonTrack = getToonTrack(attack, 3.2, ['conked'], 0.9, ['duck'], showMissedExtraTime=2.2)
-    soundTrack = getSoundTrack('SA_audit.ogg', delay=1.9, node=suit)
-    return Parallel(suitTrack, toonTrack, calcPropTrack, soundTrack, partTrack, partTrack2, partTrack3, partTrack4, partTrack5)
-
-
-def doCalculate(attack):
-    suit = attack['suit']
-    battle = attack['battle']
-    target = attack['target']
-    toon = target[0]['toon']
-    calculator = globalPropPool.getProp('calculator')
-    BattleParticles.loadParticles()
-    particleEffect = BattleParticles.createParticleEffect('Calculate')
-    BattleParticles.setEffectTexture(particleEffect, 'audit-one', color=Vec4(0, 0, 0, 1))
-    particleEffect2 = BattleParticles.createParticleEffect('Calculate')
-    BattleParticles.setEffectTexture(particleEffect2, 'audit-plus', color=Vec4(0, 0, 0, 1))
-    particleEffect3 = BattleParticles.createParticleEffect('Calculate')
-    BattleParticles.setEffectTexture(particleEffect3, 'audit-mult', color=Vec4(0, 0, 0, 1))
-    particleEffect4 = BattleParticles.createParticleEffect('Calculate')
-    BattleParticles.setEffectTexture(particleEffect4, 'audit-three', color=Vec4(0, 0, 0, 1))
-    particleEffect5 = BattleParticles.createParticleEffect('Calculate')
-    BattleParticles.setEffectTexture(particleEffect5, 'audit-div', color=Vec4(0, 0, 0, 1))
-    suitTrack = getSuitTrack(attack)
-    partTrack = getPartTrack(particleEffect, 2.1, 1.9, [particleEffect, suit, 0])
-    partTrack2 = getPartTrack(particleEffect2, 2.2, 2.0, [particleEffect2, suit, 0])
-    partTrack3 = getPartTrack(particleEffect3, 2.3, 2.1, [particleEffect3, suit, 0])
-    partTrack4 = getPartTrack(particleEffect4, 2.4, 2.2, [particleEffect4, suit, 0])
-    partTrack5 = getPartTrack(particleEffect5, 2.5, 2.3, [particleEffect5, suit, 0])
-    suitType = getSuitBodyType(attack['suitName'])
-    if suitType == 'a':
-        calcPosPoints = [Point3(-0.15, 0.37, 0.03), VBase3(1.352, -6.518, -6.045)]
-        calcDuration = 0.76
-        scaleUpPoint = Point3(1.1, 1.85, 1.81)
+    if attack['identifier'] in ('ttrealms:calculate', 'ttrealms:tabulate'):
+        # Preserve the dodge attributes from the Calculate and Tabulate attacks.
+        # I'd like to not have this so that the Toon ducks regardless of attack because I plan to eventually give these attacks the option to hit all Toons, but I'm not sure how the Toontown Realms team would feel about that.
+        dodgeDelay = 1.8
+        dodgeAnims = ['sidestep']
+        showMissedExtraTime = 0.5
     else:
-        calcPosPoints = [Point3(0.35, 0.52, 0.03), VBase3(1.352, -6.518, -6.045)]
-        calcDuration = 1.87
-        scaleUpPoint = Point3(1.0, 1.37, 1.31)
-    calcPropTrack = getPropTrack(calculator, suit.getLeftHand(), calcPosPoints, 1e-06, calcDuration, scaleUpPoint=scaleUpPoint, anim=1, propName='calculator', animStartTime=0.5, animDuration=3.4)
-    toonTrack = getToonTrack(attack, 3.2, ['conked'], 1.8, ['sidestep'])
-    soundTrack = getSoundTrack('SA_audit.ogg', delay=1.9, node=suit)
-    return Parallel(suitTrack, toonTrack, calcPropTrack, soundTrack, partTrack, partTrack2, partTrack3, partTrack4, partTrack5)
-
-
-def doTabulate(attack):
-    suit = attack['suit']
-    battle = attack['battle']
-    target = attack['target']
-    toon = target[0]['toon']
-    calculator = globalPropPool.getProp('calculator')
-    BattleParticles.loadParticles()
-    particleEffect = BattleParticles.createParticleEffect('Calculate')
-    BattleParticles.setEffectTexture(particleEffect, 'audit-plus', color=Vec4(0, 0, 0, 1))
-    particleEffect2 = BattleParticles.createParticleEffect('Calculate')
-    BattleParticles.setEffectTexture(particleEffect2, 'audit-minus', color=Vec4(0, 0, 0, 1))
-    particleEffect3 = BattleParticles.createParticleEffect('Calculate')
-    BattleParticles.setEffectTexture(particleEffect3, 'audit-mult', color=Vec4(0, 0, 0, 1))
-    particleEffect4 = BattleParticles.createParticleEffect('Calculate')
-    BattleParticles.setEffectTexture(particleEffect4, 'audit-div', color=Vec4(0, 0, 0, 1))
-    particleEffect5 = BattleParticles.createParticleEffect('Calculate')
-    BattleParticles.setEffectTexture(particleEffect5, 'audit-one', color=Vec4(0, 0, 0, 1))
-    suitTrack = getSuitTrack(attack)
-    partTrack = getPartTrack(particleEffect, 2.1, 1.9, [particleEffect, suit, 0])
-    partTrack2 = getPartTrack(particleEffect2, 2.2, 2.0, [particleEffect2, suit, 0])
-    partTrack3 = getPartTrack(particleEffect3, 2.3, 2.1, [particleEffect3, suit, 0])
-    partTrack4 = getPartTrack(particleEffect4, 2.4, 2.2, [particleEffect4, suit, 0])
-    partTrack5 = getPartTrack(particleEffect5, 2.5, 2.3, [particleEffect5, suit, 0])
-    suitType = getSuitBodyType(attack['suitName'])
-    if suitType == 'a':
-        calcPosPoints = [Point3(-0.15, 0.37, 0.03), VBase3(1.352, -6.518, -6.045)]
-        calcDuration = 0.76
-        scaleUpPoint = Point3(1.1, 1.85, 1.81)
-    else:
-        calcPosPoints = [Point3(0.35, 0.52, 0.03), VBase3(1.352, -6.518, -6.045)]
-        calcDuration = 1.87
-        scaleUpPoint = Point3(1.0, 1.37, 1.31)
-    calcPropTrack = getPropTrack(calculator, suit.getLeftHand(), calcPosPoints, 1e-06, calcDuration, scaleUpPoint=scaleUpPoint, anim=1, propName='calculator', animStartTime=0.5, animDuration=3.4)
-    toonTrack = getToonTrack(attack, 3.2, ['conked'], 1.8, ['sidestep'])
+        dodgeDelay = 0.9
+        dodgeAnims = ['duck']
+        showMissedExtraTime = 2.2
+    toonTrack = getToonTrack(attack, 3.2, ['conked'], dodgeDelay, dodgeAnims, showMissedExtraTime=showMissedExtraTime)
     soundTrack = getSoundTrack('SA_audit.ogg', delay=1.9, node=suit)
     return Parallel(suitTrack, toonTrack, calcPropTrack, soundTrack, partTrack, partTrack2, partTrack3, partTrack4, partTrack5)
 
@@ -3001,27 +2948,24 @@ def doCrunch(attack):
     toon = target[0]['toon']
     throwDuration = 3.03
     suitTrack = getSuitTrack(attack)
-    numberNames = ['one',
-     'two',
-     'three',
-     'four',
-     'five',
-     'six']
     BattleParticles.loadParticles()
+    textureNames: Tuple[str, ...] = ('audit-five',
+     'audit-four',
+     'audit-one',
+     'audit-six',
+     'audit-three',
+     'audit-two')
     numberSpill1 = BattleParticles.createParticleEffect(file='numberSpill')
     numberSpill2 = BattleParticles.createParticleEffect(file='numberSpill')
-    spillTexture1 = random.choice(numberNames)
-    spillTexture2 = random.choice(numberNames)
-    BattleParticles.setEffectTexture(numberSpill1, 'audit-' + spillTexture1)
-    BattleParticles.setEffectTexture(numberSpill2, 'audit-' + spillTexture2)
+    BattleParticles.setEffectTexture(numberSpill1, textureNames)
+    BattleParticles.setEffectTexture(numberSpill2, textureNames)
     numberSpillTrack1 = getPartTrack(numberSpill1, 1.1, 2.2, [numberSpill1, suit, 0])
     numberSpillTrack2 = getPartTrack(numberSpill2, 1.5, 1.0, [numberSpill2, suit, 0])
     numberSprayTracks = Parallel()
     numOfNumbers = random.randint(5, 9)
     for i in range(0, numOfNumbers - 1):
         nextSpray = BattleParticles.createParticleEffect(file='numberSpray')
-        nextTexture = random.choice(numberNames)
-        BattleParticles.setEffectTexture(nextSpray, 'audit-' + nextTexture)
+        BattleParticles.setEffectTexture(nextSpray, textureNames)
         nextStartTime = random.random() * 0.6 + throwDuration
         nextDuration = random.random() * 0.4 + 1.4
         nextSprayTrack = getPartTrack(nextSpray, nextStartTime, nextDuration, [nextSpray, suit, 0])
@@ -3029,8 +2973,7 @@ def doCrunch(attack):
 
     numberTracks = Parallel()
     for i in range(0, numOfNumbers):
-        texture = random.choice(numberNames)
-        next = MovieUtil.copyProp(BattleParticles.getParticle('audit-' + texture))
+        next = MovieUtil.copyProp(BattleParticles.getParticle(random.choice(textureNames)))
         next.reparentTo(suit.getRightHand())
         next.setScale(0.01, 0.01, 0.01)
         next.setColor(Vec4(0.0, 0.0, 0.0, 1.0))
@@ -3586,16 +3529,21 @@ def doMumboJumbo(attack):
     toon = target[0]['toon']
     dmg = target[0]['hp']
     BattleParticles.loadParticles()
+    textureNames: Tuple[str, ...] = ('mumbojumbo-boiler',
+     'mumbojumbo-creative',
+     'mumbojumbo-deben',
+     'mumbojumbo-high',
+     'mumbojumbo-iron')
     particleEffect = BattleParticles.createParticleEffect(file='mumboJumboSpray')
     particleEffect2 = BattleParticles.createParticleEffect(file='mumboJumboSpray')
     particleEffect3 = BattleParticles.createParticleEffect(file='mumboJumboSmother')
     particleEffect4 = BattleParticles.createParticleEffect(file='mumboJumboSmother')
     particleEffect5 = BattleParticles.createParticleEffect(file='mumboJumboSmother')
-    BattleParticles.setEffectTexture(particleEffect, 'mumbojumbo-boiler', color=Vec4(1, 0, 0, 1))
-    BattleParticles.setEffectTexture(particleEffect2, 'mumbojumbo-creative', color=Vec4(1, 0, 0, 1))
-    BattleParticles.setEffectTexture(particleEffect3, 'mumbojumbo-deben', color=Vec4(1, 0, 0, 1))
-    BattleParticles.setEffectTexture(particleEffect4, 'mumbojumbo-high', color=Vec4(1, 0, 0, 1))
-    BattleParticles.setEffectTexture(particleEffect5, 'mumbojumbo-iron', color=Vec4(1, 0, 0, 1))
+    BattleParticles.setEffectTexture(particleEffect, textureNames, color=Vec4(1, 0, 0, 1))
+    BattleParticles.setEffectTexture(particleEffect2, textureNames, color=Vec4(1, 0, 0, 1))
+    BattleParticles.setEffectTexture(particleEffect3, textureNames, color=Vec4(1, 0, 0, 1))
+    BattleParticles.setEffectTexture(particleEffect4, textureNames, color=Vec4(1, 0, 0, 1))
+    BattleParticles.setEffectTexture(particleEffect5, textureNames, color=Vec4(1, 0, 0, 1))
     suitTrack = getSuitTrack(attack)
     partTrack = getPartTrack(particleEffect, 2.5, 2, [particleEffect, suit, 0])
     partTrack2 = getPartTrack(particleEffect2, 2.5, 2, [particleEffect2, suit, 0])
@@ -3733,13 +3681,16 @@ def doSpin(attack):
 def doLegalese(attack):
     suit = attack['suit']
     BattleParticles.loadParticles()
+    textureNames: Tuple[str, ...] = ('legalese-hc',
+     'legalese-qpq',
+     'legalese-vd')
     sprayEffect1 = BattleParticles.createParticleEffect(file='legaleseSpray')
     sprayEffect2 = BattleParticles.createParticleEffect(file='legaleseSpray')
     sprayEffect3 = BattleParticles.createParticleEffect(file='legaleseSpray')
     color = Vec4(0.4, 0, 0, 1)
-    BattleParticles.setEffectTexture(sprayEffect1, 'legalese-hc', color=color)
-    BattleParticles.setEffectTexture(sprayEffect2, 'legalese-qpq', color=color)
-    BattleParticles.setEffectTexture(sprayEffect3, 'legalese-vd', color=color)
+    BattleParticles.setEffectTexture(sprayEffect1, textureNames, color=color)
+    BattleParticles.setEffectTexture(sprayEffect2, textureNames, color=color)
+    BattleParticles.setEffectTexture(sprayEffect3, textureNames, color=color)
     partDelay = 1.3
     partDuration = 1.15
     damageDelay = 1.9
